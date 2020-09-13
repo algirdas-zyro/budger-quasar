@@ -1,4 +1,4 @@
-import { GET_USER_DATA } from "./getter-types";
+import { GET_USER_DATA } from './getter-types';
 
 export default {
   [GET_USER_DATA](state) {

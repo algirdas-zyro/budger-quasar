@@ -1,8 +1,8 @@
-import Vue from "vue";
-import Vuex from "vuex";
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-import { USER } from "./namespace";
-import user from "./user";
+import { USER } from './namespace';
+import user from './user';
 
 Vue.use(Vuex);
 

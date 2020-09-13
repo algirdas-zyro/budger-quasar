@@ -1,4 +1,4 @@
 export default () => ({
-  name: "Bobber",
+  name: 'Bobber',
   isAuthentificated: false
 });

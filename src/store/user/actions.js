@@ -1,5 +1,5 @@
-import { LOG_IN } from "./action-types";
-import { SET_USER_NAME } from "./mutation-types";
+import { LOG_IN } from './action-types';
+import { SET_USER_NAME } from './mutation-types';
 
 export default {
   [LOG_IN](

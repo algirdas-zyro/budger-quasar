@@ -1,6 +1,9 @@
 <template>
   <q-page class="flex flex-center">
-    <q-input v-model="text" label="Standard" />
+    <q-input
+      v-model="text"
+      label="Standard"
+    />
   </q-page>
 </template>
 
@@ -9,13 +12,13 @@ import { LOG_IN } from '../store/user/action-types';
 import { GET_USER_DATA } from '../store/user/getter-types';
 import { USER } from '../store/namespace';
 
-import {createNamespacedHelpers} from 'vuex';
+import { createNamespacedHelpers } from 'vuex';
 
 const { mapActions: userActions, mapGetters: userGetters } = createNamespacedHelpers(USER);
 
 export default {
   name: 'PageIndex',
-  data() {
+  data () {
     return {
       text: ''
     }
@@ -26,11 +29,11 @@ export default {
     })
   },
   watch: {
-		text: {
-			handler(input) {
+    text: {
+      handler (input) {
         this.logIn(input);
-			}
-		}
+      }
+    }
   },
   methods: {
     ...userActions({
