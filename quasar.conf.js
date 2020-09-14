@@ -1,3 +1,5 @@
+const dotenv = require('dotenv')
+
 /*
  * This file runs in a Node context (it's NOT transpiled by Babel), so use only
  * the ES6 features that are supported by your Node version. https://node.green/
@@ -18,7 +20,7 @@ module.exports = function(/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
-    boot: ["axios"],
+    boot: ["axios", 'use'],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.scss"],
@@ -40,6 +42,7 @@ module.exports = function(/* ctx */) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: "history", // available values: 'hash', 'history'
+      env: dotenv.config().parsed,
 
       // transpile: false,
 
@@ -49,10 +52,10 @@ module.exports = function(/* ctx */) {
       // transpileDependencies: [],
 
       // rtl: false, // https://quasar.dev/options/rtl-support
-      // preloadChunks: true,
+      preloadChunks: true,
       // showProgress: false,
       // gzip: true,
-      // analyze: true,
+      analyze: true,
 
       // Options below are automatically set depending on the env, set them if you want to override
       // extractCSS: false,
@@ -65,7 +68,7 @@ module.exports = function(/* ctx */) {
           loader: "eslint-loader",
           exclude: /node_modules/
         });
-      }
+      },
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
@@ -94,7 +97,21 @@ module.exports = function(/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: []
+      plugins: [
+        // 'AddressbarColor',
+        // 'AppFullscreen',
+        // 'AppVisibility',
+        // 'BottomSheet',
+        // 'Cookies',
+        // 'Dark',
+        // 'Dialog',
+        // 'Loading',
+        // 'LoadingBar',
+        // 'LocalStorage',
+        // 'SessionStorage',
+        // 'Meta',
+        'Notify',
+      ]
     },
 
     // animations: 'all', // --- includes all animations

@@ -1,44 +1,47 @@
 <template>
   <q-page class="flex flex-center">
-    <q-input
-      v-model="text"
-      label="Standard"
-    />
+
+    <q-form
+      @submit="onSubmit"
+      class="q-gutter-md"
+    >
+      <q-btn
+        label="Get Expenses"
+        type="submit"
+        color="primary"
+      />
+    </q-form>
   </q-page>
 </template>
 
 <script>
-import { LOG_IN } from '../store/user/action-types';
-import { GET_USER_DATA } from '../store/user/getter-types';
-import { USER } from '../store/namespace';
-
-import { createNamespacedHelpers } from 'vuex';
-
-const { mapActions: userActions, mapGetters: userGetters } = createNamespacedHelpers(USER);
+import useApi, { EXPENSES } from 'src/use/useApi'
 
 export default {
-  name: 'PageIndex',
-  data () {
+  setup () {
+    const {
+      isLoading,
+      hasLoaded,
+      hasFailed,
+      errorMessage,
+      result,
+      callApi
+    } = useApi()
+
     return {
-      text: ''
-    }
-  },
-  computed: {
-    ...userGetters({
-      getUserData: GET_USER_DATA
-    })
-  },
-  watch: {
-    text: {
-      handler (input) {
-        this.logIn(input);
-      }
+      isLoading,
+      hasLoaded,
+      hasFailed,
+      errorMessage,
+      result,
+      callApi
     }
   },
   methods: {
-    ...userActions({
-      logIn: LOG_IN
-    })
+    async onSubmit () {
+      await this.callApi(EXPENSES)
+      console.log(this.result)
+    },
   }
 }
 </script>

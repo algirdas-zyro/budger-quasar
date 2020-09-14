@@ -1,4 +1,5 @@
 export default () => ({
-  name: 'Bobber',
-  isAuthentificated: false
+  email: null,
+  id: null,
+  token: null
 });

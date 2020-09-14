@@ -16,6 +16,52 @@
         </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
+        <div
+          v-if="isAuthenticated"
+          @click="logOut"
+        >
+          <div>
+            {{getEmail}}
+          </div>
+          <router-link
+            :to="$options.HOME_PATH"
+            v-slot="{ href, navigate, isActive, isExactActive }"
+          >
+            <q-btn
+              type="a"
+              :class="[isActive && 'router-link-active', isExactActive && 'router-link-exact-active']"
+              :href="href"
+              label="LOG OUT"
+              @click="navigate"
+            />
+          </router-link>
+        </div>
+        <div v-if="!isAuthenticated">
+          <router-link
+            :to="$options.LOGIN_PATH"
+            v-slot="{ href, navigate, isActive, isExactActive }"
+          >
+            <q-btn
+              type="a"
+              label="LOG IN"
+              :class="[isActive && 'router-link-active', isExactActive && 'router-link-exact-active']"
+              :href="href"
+              @click="navigate"
+            />
+          </router-link>
+          <router-link
+            :to="$options.REGISTER_PATH"
+            v-slot="{ href, navigate, isActive, isExactActive }"
+          >
+            <q-btn
+              type="a"
+              label="REGISTER"
+              :class="[isActive && 'router-link-active', isExactActive && 'router-link-exact-active']"
+              :href="href"
+              @click="navigate"
+            />
+          </router-link>
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -32,11 +78,6 @@
         >
           Essential Links
         </q-item-label>
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
       </q-list>
     </q-drawer>
 
@@ -47,61 +88,40 @@
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink.vue'
+import { createNamespacedHelpers } from 'vuex';
 
-const linksData = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-];
+import { LOG_OUT } from 'src/store/user/action-types';
+import { USER } from 'src/store/namespace';
+import {
+  HOME_PATH,
+  LOGIN_PATH,
+  REGISTER_PATH,
+} from '../router/routes'
+
+import { USER_EMAIL, IS_AUTHENTICATED } from 'src/store/user/getter-types';
+
+const {
+  mapActions: userActions,
+  mapGetters: userGetters
+} = createNamespacedHelpers(USER);
 
 export default {
-  name: 'MainLayout',
-  components: { EssentialLink },
+  HOME_PATH,
+  LOGIN_PATH,
+  REGISTER_PATH,
   data () {
     return {
       leftDrawerOpen: false,
-      essentialLinks: linksData
     }
+  },
+  computed: {
+    ...userGetters({
+      isAuthenticated: IS_AUTHENTICATED,
+      getEmail: USER_EMAIL
+    })
+  },
+  methods: {
+    ...userActions({ logOut: LOG_OUT }),
   }
 }
 </script>

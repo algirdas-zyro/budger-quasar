@@ -1,11 +1,20 @@
-import { LOG_IN } from './action-types';
-import { SET_USER_NAME } from './mutation-types';
+import {
+  LOG_IN,
+  LOG_OUT,
+} from './action-types';
+
+import {
+  SET_USER,
+  SET_TOKEN,
+} from './mutation-types';
 
 export default {
-  [LOG_IN](
-    { state, getters, rootState, rootGetters, dispatch, commit },
-    payload
-  ) {
-    commit(SET_USER_NAME, payload);
+  [LOG_IN]({ commit }, {jwt, user}) {
+    commit(SET_TOKEN, jwt);
+    commit(SET_USER, { ...user });
+  },
+  [LOG_OUT]({ commit }) {
+    commit(SET_TOKEN, null);
+    commit(SET_USER, {});
   }
 };
