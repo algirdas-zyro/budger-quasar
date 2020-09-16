@@ -63,7 +63,7 @@ export default {
   data () {
     return {
       email: 'algirdas.tamasauskas@gmail.com',
-      password: '8simbolia',
+      password: '8simboliai',
       hidePassword: true,
     }
   },

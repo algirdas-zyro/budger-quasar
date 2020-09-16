@@ -4,7 +4,8 @@ import {
 } from './mutation-types';
 
 export default {
-  [SET_USER](state, { id, email }) {
+  [SET_USER](state, { id, email, ...user }) {
+    console.log({user})
     state.id = id;
     state.email = email;
   },

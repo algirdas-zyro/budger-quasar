@@ -1,6 +1,7 @@
 export const HOME_PATH = '/'
 export const LOGIN_PATH = '/login'
 export const REGISTER_PATH = '/register'
+export const CREATE_PATH = '/create'
 
 const routes = [
   {
@@ -9,7 +10,8 @@ const routes = [
     children: [
       { path: HOME_PATH, component: () => import('pages/Index.vue') },
       { path: LOGIN_PATH, component: () => import('pages/Login.vue') },
-      { path: REGISTER_PATH, component: () => import('pages/Register.vue') }
+      { path: REGISTER_PATH, component: () => import('pages/Register.vue') },
+      { path: CREATE_PATH, component: () => import('pages/Create.vue') }
     ]
   },
 

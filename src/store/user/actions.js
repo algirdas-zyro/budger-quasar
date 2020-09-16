@@ -11,7 +11,7 @@ import {
 export default {
   [LOG_IN]({ commit }, {jwt, user}) {
     commit(SET_TOKEN, jwt);
-    commit(SET_USER, { ...user });
+    commit(SET_USER, user);
   },
   [LOG_OUT]({ commit }) {
     commit(SET_TOKEN, null);

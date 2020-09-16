@@ -1,23 +1,27 @@
 <template>
   <q-page class="flex flex-center">
-
-    <q-form
-      @submit="onSubmit"
-      class="q-gutter-md"
+    <router-link
+      :to="$options.CREATE_PATH"
+      v-slot="{ href, navigate, isActive, isExactActive }"
     >
       <q-btn
-        label="Get Expenses"
-        type="submit"
+        type="a"
         color="primary"
+        label="CREATE"
+        :class="[isActive && 'router-link-active', isExactActive && 'router-link-exact-active']"
+        :href="href"
+        @click="navigate"
       />
-    </q-form>
+    </router-link>
   </q-page>
 </template>
 
 <script>
-import useApi, { EXPENSES } from 'src/use/useApi'
+import useApi, { BUDGERS } from 'src/use/useApi'
+import { CREATE_PATH } from '../router/routes'
 
 export default {
+  CREATE_PATH,
   setup () {
     const {
       isLoading,
@@ -39,7 +43,7 @@ export default {
   },
   methods: {
     async onSubmit () {
-      await this.callApi(EXPENSES)
+      await this.callApi(BUDGERS)
       console.log(this.result)
     },
   }

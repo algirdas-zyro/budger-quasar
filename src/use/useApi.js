@@ -32,10 +32,10 @@ export default function useApi () {
 
   // const errorMessage = computed(() => error.value?.message)
   const errorMessage = computed(() => {
-    if (error.value?.response?.status === 400) {
-      // Deeply nested first Stapi message:
-      return error.value?.response?.data?.message?.[0]?.messages?.[0]?.message
-    }
+    // Deeply nested first Stapi messages:
+    const { status, data } = error.value?.response ?? {}
+    if (status === 400 || status === 429) { return data?.message?.[0]?.messages?.[0]?.message }
+    if (status === 403) { return data?.message }
     return error.value?.message
   })
 
@@ -99,6 +99,6 @@ export default function useApi () {
 }
 
 // export endpoints for use in components
-export const EXPENSES = 'expenses'
+export const BUDGERS = 'budgers'
 export const AUTH_LOCAL = 'auth/local'
 export const AUTH_LOCAL_REGISTER = 'auth/local/register'
