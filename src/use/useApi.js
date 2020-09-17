@@ -5,8 +5,8 @@ import { createNamespacedHelpers } from 'vuex-composition-helpers';
 import axios from 'axios'
 import { Notify } from 'quasar'
 
-import { IS_AUTHENTICATED, JWT_TOKEN } from 'src/store/user/getter-types';
 import { USER } from 'src/store/namespace';
+import { IS_AUTHENTICATED, JWT_TOKEN } from 'src/store/user/getters';
 
 const { useGetters: useUserGetters } = createNamespacedHelpers(USER); // specific module name
 
@@ -20,6 +20,13 @@ const DEFAULT_CONFIG = {
     }
   }
 }
+
+const NOTIFY_TIMEOUT = 4000
+const NOTIFY_MESSAGE_TITLE = 'Error'
+const NOTIFY_POSITION = 'top-right'
+const NOTIFY_TYPE = 'negative'
+const NOTIFY_CLOSE_ICON = 'close'
+const NOTIFY_CLOSE_COLOR = 'white'
 
 export default function useApi () {
   const isLoading = ref(false)
@@ -39,10 +46,7 @@ export default function useApi () {
     return error.value?.message
   })
 
-  const {
-    isAuthenticated,
-    jwtToken
-  } = useUserGetters({
+  const { isAuthenticated, jwtToken } = useUserGetters({
     jwtToken: JWT_TOKEN,
     isAuthenticated: IS_AUTHENTICATED,
   })
@@ -51,13 +55,16 @@ export default function useApi () {
     hasFailed.value = true
     error.value = { ...err, message: err.message }
     Notify.create({
-      message: 'Error',
       caption: errorMessage.value,
-      position: 'top-right',
-      timeout: 4000,
-      type: 'negative',
       progress: true,
-      actions: [{ icon: 'close', color: 'white' }]
+      message: NOTIFY_MESSAGE_TITLE,
+      position: NOTIFY_POSITION,
+      timeout: NOTIFY_TIMEOUT,
+      type: NOTIFY_TYPE,
+      actions: [{
+        icon: NOTIFY_CLOSE_ICON,
+        color: NOTIFY_CLOSE_COLOR
+      }]
     })
   }
 
@@ -99,6 +106,6 @@ export default function useApi () {
 }
 
 // export endpoints for use in components
-export const BUDGERS = 'budgers'
-export const AUTH_LOCAL = 'auth/local'
-export const AUTH_LOCAL_REGISTER = 'auth/local/register'
+export const BUDGERS_API = 'budgers'
+export const AUTH_LOCAL_API = 'auth/local'
+export const AUTH_LOCAL_REGISTER_API = 'auth/local/register'

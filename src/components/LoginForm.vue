@@ -52,10 +52,10 @@
 import { createNamespacedHelpers } from 'vuex';
 
 import { USER } from 'src/store/namespace';
-import { LOG_IN } from 'src/store/user/action-types';
+import { LOG_IN } from 'src/store/user/actions';
 import { HOME_PATH } from 'src/router/routes';
 
-import useApi, { AUTH_LOCAL } from 'src/use/useApi'
+import useApi, { AUTH_LOCAL_API } from 'src/use/useApi'
 
 const { mapActions: userActions } = createNamespacedHelpers(USER);
 
@@ -91,7 +91,7 @@ export default {
     ...userActions({ logIn: LOG_IN }),
     async onSubmit () {
       const { email, password, remember, callApi, $router } = this
-      const { jwt, user } = await callApi(AUTH_LOCAL, {
+      const { jwt, user } = await callApi(AUTH_LOCAL_API, {
         method: 'POST',
         data: {
           identifier: email,

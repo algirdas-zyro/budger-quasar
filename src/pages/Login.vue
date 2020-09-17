@@ -9,7 +9,8 @@
 </template>
 
 <script>
-import LoginForm from '../components/LoginForm'
+import LoginForm from 'src/components/LoginForm'
+
 export default {
   components: {
     LoginForm

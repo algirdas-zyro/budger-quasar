@@ -64,9 +64,9 @@
 import { createNamespacedHelpers } from 'vuex';
 
 import { USER } from 'src/store/namespace';
-import { LOG_IN } from 'src/store/user/action-types';
+import { LOG_IN } from 'src/store/user/actions';
 
-import useApi, { AUTH_LOCAL_REGISTER } from 'src/use/useApi'
+import useApi, { AUTH_LOCAL_REGISTER_API } from 'src/use/useApi'
 
 const {
   mapActions: userActions,
@@ -107,7 +107,7 @@ export default {
     ...userActions({ logIn: LOG_IN }),
     async onSubmit () {
       const username = this.username || this.email.split('@')[0]
-      await this.callApi(AUTH_LOCAL_REGISTER, {
+      await this.callApi(AUTH_LOCAL_REGISTER_API, {
         method: 'POST',
         data: {
           username,

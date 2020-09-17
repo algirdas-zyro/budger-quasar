@@ -1,16 +1,23 @@
 <template>
-  <q-page class="create">
-
-    <h1>Create a new budger</h1>
-
-    <CreateForm />
-  </q-page>
+  <q-form
+    @submit="onSubmit"
+    class="q-gutter-md"
+  >
+    <q-input
+      filled
+      label="Title"
+      v-model="title"
+    />
+    <q-btn
+      label="Create"
+      type="submit"
+      color="primary"
+    />
+  </q-form>
 </template>
 
 <script>
 import { createNamespacedHelpers } from 'vuex';
-
-import CreateForm from 'src/components/CreateForm'
 
 import { USER } from 'src/store/namespace';
 import { LOG_IN } from 'src/store/user/actions';
@@ -21,9 +28,6 @@ import useApi, { BUDGERS_API } from 'src/use/useApi'
 const { mapActions: userActions } = createNamespacedHelpers(USER);
 
 export default {
-  components: {
-    CreateForm
-  },
   data () {
     return {
       title: '',

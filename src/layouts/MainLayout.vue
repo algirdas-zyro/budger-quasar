@@ -90,7 +90,7 @@
 <script>
 import { createNamespacedHelpers } from 'vuex';
 
-import { LOG_OUT } from 'src/store/user/action-types';
+import { LOG_OUT } from 'src/store/user/actions';
 import { USER } from 'src/store/namespace';
 import {
   HOME_PATH,
@@ -98,7 +98,7 @@ import {
   REGISTER_PATH,
 } from '../router/routes'
 
-import { USER_EMAIL, IS_AUTHENTICATED } from 'src/store/user/getter-types';
+import { USER_EMAIL, IS_AUTHENTICATED } from 'src/store/user/getters';
 
 const {
   mapActions: userActions,

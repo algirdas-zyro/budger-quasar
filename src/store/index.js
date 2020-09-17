@@ -1,8 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { USER } from './namespace';
+import { USER, BUDGER } from './namespace';
 import user from './user';
+import budger from './budger';
 
 Vue.use(Vuex);
 
@@ -18,7 +19,8 @@ Vue.use(Vuex);
 export default function(/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
-      [USER]: user
+      [USER]: user,
+      [BUDGER]: budger,
     },
 
     // enable strict mode (adds overhead!)
