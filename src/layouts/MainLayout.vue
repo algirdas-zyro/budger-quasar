@@ -10,9 +10,22 @@
           aria-label="Menu"
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
-
+        <router-link
+          :to="CATEGORIES_PATH"
+          v-slot="{ href, navigate, isActive, isExactActive }"
+        >
+          <q-btn
+            type="a"
+            label="user categories"
+            :class="[isActive && 'router-link-active', isExactActive && 'router-link-exact-active']"
+            :href="href"
+            @click="navigate"
+          />
+        </router-link>
         <q-toolbar-title>
-          Quasar App
+          <router-link :to="HOME_PATH">
+            Quasar App
+          </router-link>
         </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
@@ -96,7 +109,8 @@ import {
   HOME_PATH,
   LOGIN_PATH,
   REGISTER_PATH,
-} from '../router/routes'
+  CATEGORIES_PATH,
+} from 'src/router/routes'
 
 import { USER_EMAIL, IS_AUTHENTICATED } from 'src/store/user/getters';
 
@@ -111,6 +125,7 @@ export default {
       HOME_PATH,
       LOGIN_PATH,
       REGISTER_PATH,
+      CATEGORIES_PATH,
     }
   },
   data () {

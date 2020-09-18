@@ -11,7 +11,6 @@
         <q-table
           title="Expenses"
           row-key="id"
-          :dense="$q.screen.lt.md"
           :data="expensesData"
           :columns="expensesColumns"
         >
@@ -97,8 +96,8 @@ import { createNamespacedHelpers } from 'vuex';
 import LoginForm from 'src/components/LoginForm'
 import { CREATE_PATH } from 'src/router/routes'
 import { USER, BUDGER } from 'src/store/namespace'
-import { IS_AUTHENTICATED, HAS_BUDGERS, USER_BUDGERS } from 'src/store/user/getters'
-import { HAS_EXPENSES, BUDGER_EXPENSES } from 'src/store/budger/getters'
+import { IS_AUTHENTICATED, USER_BUDGERS, USER_CATEGORIES } from 'src/store/user/getters'
+import { BUDGER_EXPENSES } from 'src/store/budger/getters'
 import useApi, { BUDGERS_API } from 'src/use/useApi'
 
 const { mapGetters: userGetters } = createNamespacedHelpers(USER);
@@ -129,13 +128,15 @@ export default {
   computed: {
     ...userGetters({
       isAuthenticated: IS_AUTHENTICATED,
-      hasBudgers: HAS_BUDGERS,
       userBudgers: USER_BUDGERS,
+      userCategories: USER_CATEGORIES,
     }),
     ...budgerGetters({
-      hasExpenses: HAS_EXPENSES,
       budgerExpenses: BUDGER_EXPENSES,
     }),
+    hasBudgers: ({ userBudgers }) => !!userBudgers.length,
+    hasCategories: ({ userCategories }) => !!userCategories.length,
+    hasExpenses: ({ budgerExpenses }) => !!budgerExpenses.length,
     expensesData: ({ budgerExpenses }) => budgerExpenses.map(({
       id,
       amount,

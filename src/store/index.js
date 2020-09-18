@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { USER, BUDGER } from './namespace';
+import { USER, BUDGER, REQUEST } from './namespace';
 import user from './user';
 import budger from './budger';
+import request from './request';
 
 Vue.use(Vuex);
 
@@ -21,6 +22,7 @@ export default function(/* { ssrContext } */) {
     modules: {
       [USER]: user,
       [BUDGER]: budger,
+      [REQUEST]: request,
     },
 
     // enable strict mode (adds overhead!)

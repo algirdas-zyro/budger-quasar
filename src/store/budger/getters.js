@@ -1,9 +1,9 @@
 export const BUDGER_ID = 'BUDGER_ID';
 export const BUDGER_EXPENSES = 'BUDGER_EXPENSES';
-export const HAS_EXPENSES = 'HAS_EXPENSES';
+export const BUDGER_CATEGORIES = 'BUDGER_CATEGORIES';
 
 export default {
   [BUDGER_ID]: (state) => state.id,
   [BUDGER_EXPENSES]: (state) => state.expenses,
-  [HAS_EXPENSES]: (state) => !!state.expenses.length,
+  [BUDGER_CATEGORIES]: (state) => state.categories,
 };

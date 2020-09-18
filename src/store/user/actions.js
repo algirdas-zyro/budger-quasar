@@ -20,8 +20,8 @@ export default {
     }
 
     if (user.main_budger) {
-      const { id, expenses } = user.main_budger
-      dispatch(`${BUDGER}/${INITIALIZE}`, { id, expenses }, { root: true });
+      const { id, expenses, categories } = user.main_budger
+      dispatch(`${BUDGER}/${INITIALIZE}`, { id, expenses, categories }, { root: true });
     }
   },
   [LOG_OUT]({ commit }) {
