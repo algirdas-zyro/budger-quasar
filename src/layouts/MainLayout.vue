@@ -24,7 +24,7 @@
             {{getEmail}}
           </div>
           <router-link
-            :to="$options.HOME_PATH"
+            :to="HOME_PATH"
             v-slot="{ href, navigate, isActive, isExactActive }"
           >
             <q-btn
@@ -38,7 +38,7 @@
         </div>
         <div v-if="!isAuthenticated">
           <router-link
-            :to="$options.LOGIN_PATH"
+            :to="LOGIN_PATH"
             v-slot="{ href, navigate, isActive, isExactActive }"
           >
             <q-btn
@@ -50,7 +50,7 @@
             />
           </router-link>
           <router-link
-            :to="$options.REGISTER_PATH"
+            :to="REGISTER_PATH"
             v-slot="{ href, navigate, isActive, isExactActive }"
           >
             <q-btn
@@ -106,9 +106,13 @@ const {
 } = createNamespacedHelpers(USER);
 
 export default {
-  HOME_PATH,
-  LOGIN_PATH,
-  REGISTER_PATH,
+  setup () {
+    return {
+      HOME_PATH,
+      LOGIN_PATH,
+      REGISTER_PATH,
+    }
+  },
   data () {
     return {
       leftDrawerOpen: false,

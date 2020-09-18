@@ -1,6 +1,6 @@
-import { SET_USER, SET_TOKEN } from 'src/store/user/mutations';
-import { INITIALIZE } from 'src/store/budger/actions';
 import { BUDGER } from 'src/store/namespace';
+import { INITIALIZE } from 'src/store/budger/actions';
+import { SET_USER, SET_TOKEN } from 'src/store/user/mutations';
 
 export const LOG_IN = 'LOG_IN';
 export const LOG_OUT = 'LOG_OUT';
@@ -20,7 +20,8 @@ export default {
     }
 
     if (user.main_budger) {
-      dispatch(`${BUDGER}/${INITIALIZE}`, user.main_budger, { root: true });
+      const { id, expenses } = user.main_budger
+      dispatch(`${BUDGER}/${INITIALIZE}`, { id, expenses }, { root: true });
     }
   },
   [LOG_OUT]({ commit }) {
