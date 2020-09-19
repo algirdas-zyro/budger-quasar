@@ -8,9 +8,16 @@
         class="expenses"
         v-if="hasExpenses"
       >
+
+        <q-file
+          clearable
+          label="CSV"
+          @input="handleCsvInput"
+        />
         <q-table
           title="Expenses"
           row-key="id"
+          :pagination="{rowsPerPage:0}"
           :data="budgerExpenses"
           :columns="expensesColumns"
         >
@@ -30,6 +37,36 @@
             </q-td>
           </template>
         </q-table>
+
+        <q-table
+          title="Expenses"
+          row-key="reference"
+          :pagination="{rowsPerPage:0}"
+          :data="importedExpenses"
+          :columns="expensesColumns"
+        >
+          <template v-slot:body-cell-category="props">
+            <q-td :props="props">
+              <q-select
+                v-if="props.row.category"
+                dense
+                map-options
+                label="Category"
+                style="width: 250px"
+                option-value="id"
+                option-label="title"
+                :value="props.row.category.id"
+                :options="userCategories"
+                @input="handleCategoryInput($event, props.row.id)"
+              />
+            </q-td>
+          </template>
+          <template v-slot:body-cell-reference="props">
+            <q-td :props="props">
+              {{props.row.reference}}
+            </q-td>
+          </template>
+        </q-table>
       </div>
       <div
         class="list"
@@ -38,7 +75,7 @@
         <div class="budgers">
           <div
             class="budger"
-            v-for="({title, id}) in userBudgers"
+            v-for="({ title, id }) in userBudgers"
             :key="id"
           >{{title}}</div>
         </div>
@@ -75,6 +112,8 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex';
+import Papa from 'papaparse';
+import moment from 'moment';
 
 import LoginForm from 'src/components/LoginForm'
 import { CREATE_PATH } from 'src/router/routes'
@@ -93,8 +132,8 @@ const {
 export default {
   data () {
     return {
-      model: null,
-      expensesData: [],
+      csv: null,
+      importedExpenses: []
     }
   },
   components: {
@@ -127,13 +166,19 @@ export default {
         name: 'id',
       },
       {
+        field: ({ date }) => date,
+        format: val => moment(val).format('YYYY-MM-DD'),
+        label: 'Date',
+        name: 'date',
+      },
+      {
         field: ({ amount }) => amount,
         format: val => `${val} €`,
         label: 'Amount',
         name: 'amount',
       },
       {
-        field: ({ category }) => category.id,
+        field: ({ category }) => category?.id,
         label: 'Category',
         name: 'category',
       },
@@ -142,58 +187,45 @@ export default {
         label: 'Ref',
         name: 'reference',
       },
-    ]),
-  },
-  // watch: {
-  //   budgerExpenses: {
-  //     immediate: true,
-  //     handler: function () {
-  //       this.setExpensesData()
-  //     }
-  //   }
-  // },
-  mounted () {
-    this.setExpensesData();
+    ]).map((column) => ({
+      ...column,
+      sortable: true,
+      align: 'left',
+      style: 'white-space: normal',
+    })),
   },
   methods: {
     ...budgerActions({
-      updateEntryCategory: UPDATE_ENTRY_CATEGORY
+      updateEntryCategory: UPDATE_ENTRY_CATEGORY,
     }),
-    async onSubmit () {
-      await this.callApi(BUDGERS_API)
-    },
     handleCategoryInput (category, expenseId) {
       this.updateEntryCategory({ category, expenseId })
     },
-    setExpensesData () {
-      this.expensesData = this.budgerExpenses.map(({
-        id,
-        amount,
-        category,
-        reference
-      }) => ({
-        id,
-        amount,
-        category,
-        reference
-      }))
-    },
-    filterFn (val, update) {
-      if (val === '') {
-        update(() => {
-          // this.options = stringOptions
+    handleCsvInput (e) {
+      if (!e) return;
 
-          // with Quasar v1.7.4+
-          // here you have access to "ref" which
-          // is the Vue reference of the QSelect
-        })
-        return
-      }
-
-      update(() => {
-        const needle = val.toLowerCase()
-        // this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-      })
+      Papa.parse(e, {
+        delimiter: ';',
+        complete: ({ data }) => {
+          const result = data.map((row, i) => ({
+            id: null,
+            date: row[1],
+            amount: +row[3]?.replace(',', '.'),
+            reference: `${row[4]} ${row[9]} ${row[12]}`,
+            category: {},
+          })).filter(({ amount }) => !isNaN(amount));
+          const dateFormats = {
+            date: 'dddd, MMMM Do YYYY',
+            datetime: 'dddd, MMMM Do YYYY HH:mm',
+            time: 'HH:mm A',
+            timestamp: 'dddd, MMMM Do YYYY HH:mm',
+          };
+          this.importedExpenses = result
+        },
+        error: (error) => {
+          console.log(error); // TODO - add error handling
+        },
+      });
     }
   }
 }

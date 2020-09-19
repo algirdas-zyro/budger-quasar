@@ -1,24 +1,12 @@
 /* eslint-disable no-console */
 /* eslint no-console: ["error", { allow: ["error"] }] */
 import { ref, reactive, computed, getCurrentInstance } from '@vue/composition-api'
-import { createNamespacedHelpers } from 'vuex-composition-helpers';
 import axios from 'axios'
 import { Notify } from 'quasar'
 
-import { USER } from 'src/store/namespace';
-import { IS_AUTHENTICATED, JWT_TOKEN } from 'src/store/user/getters';
-
-const { useGetters: useUserGetters } = createNamespacedHelpers(USER); // specific module name
-
 // default axios request config
 const DEFAULT_CONFIG = {
-  method: 'get',
-  baseURL: process.env.API_URL,
-  headers: {
-    common: {
-      Accept: 'application/json'
-    }
-  }
+  method: 'get'
 }
 
 const NOTIFY_TIMEOUT = 4000
@@ -46,11 +34,6 @@ export default function useApi () {
     return error.value?.message
   })
 
-  const { isAuthenticated, jwtToken } = useUserGetters({
-    jwtToken: JWT_TOKEN,
-    isAuthenticated: IS_AUTHENTICATED,
-  })
-
   const errorHandler = (err) => {
     hasFailed.value = true
     error.value = { ...err, message: err.message }
@@ -73,10 +56,6 @@ export default function useApi () {
     hasLoaded.value = false
     hasFailed.value = false
     requestConfig.value = { url, ...DEFAULT_CONFIG, ...config }
-
-    if (isAuthenticated.value) {
-      requestConfig.value.headers.Authorization = `Bearer ${jwtToken.value}`
-    }
 
     try {
       const { data } = await axios(requestConfig.value)
