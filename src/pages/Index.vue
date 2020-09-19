@@ -18,7 +18,6 @@
             <q-td :props="props">
               <q-select
                 dense
-                use-input
                 map-options
                 label="Category"
                 style="width: 250px"
