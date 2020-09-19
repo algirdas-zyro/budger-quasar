@@ -45,23 +45,11 @@
           :props="props"
         >
           <q-td colspan="100%">
-            <div
-              class="inputs"
-              v-if="props.row.mappings"
-            >
-              <div
-                class="mappins"
-                v-for="(mapping, index) in props.row.mappings"
-                :key="index"
-              >
-                <q-input v-model="mapping.fragment" />
-              </div>
-            </div>
-            <q-form @submit.prevent="onMappingsSubmit($event, props.row.id)">
+            <q-form @submit.prevent="onMappingsSubmit(props.row.id)">
               <div class="create">
                 <q-input
                   label="new mapping"
-                  v-model="newMapping"
+                  v-model="newMappingInput"
                 />
               </div>
               <q-btn
@@ -71,6 +59,18 @@
                 style="width:100%"
               />
             </q-form>
+            <div
+              class="inputs"
+              v-if="props.row.mappings"
+            >
+              <div
+                class="mappins"
+                v-for="(mapping, index) in props.row.mappings"
+                :key="index"
+              >
+                <q-input :value="mapping" />
+              </div>
+            </div>
           </q-td>
         </q-tr>
       </template>
@@ -98,7 +98,8 @@
 import { createNamespacedHelpers } from 'vuex';
 
 import { USER } from 'src/store/namespace';
-import { LOG_IN } from 'src/store/user/actions';
+import { CREATE_CATEGORY_MAPPING } from 'src/store/user/actions';
+
 import { HOME_PATH } from 'src/router/routes';
 
 import useApi, { CATEGORIES_API } from 'src/use/useApi'
@@ -110,7 +111,7 @@ export default {
   data () {
     return {
       title: '',
-      newMapping: '',
+      newMappingInput: '',
     }
   },
   setup () {
@@ -151,9 +152,12 @@ export default {
     ])
   },
   methods: {
-    ...userActions({ logIn: LOG_IN }),
-    onMappingsSubmit (e, id) {
-
+    ...userActions({
+      createCategoryMapping: CREATE_CATEGORY_MAPPING
+    }),
+    onMappingsSubmit (categoryId) {
+      this.createCategoryMapping({ categoryId, mapping: this.newMappingInput })
+      this.newMappingInput = ''
     },
     async onSubmit () {
       await this.callApi(CATEGORIES_API, {

@@ -1,8 +1,15 @@
 import axios from 'axios';
 
-import { BUDGER } from 'src/store/namespace';
+import { BUDGER, SOCKET } from 'src/store/namespace';
+
+import { EMIT } from 'src/store/socket/actions'
 import { INITIALIZE } from 'src/store/budger/actions';
-import { SET_USER, SET_TOKEN } from 'src/store/user/mutations';
+import {
+  SET_USER,
+  SET_TOKEN,
+  SET_CATEGORY_MAPPING
+} from 'src/store/user/mutations';
+
 import { JWT_TOKEN } from './getters';
 
 let jwtInterceptor;
@@ -10,6 +17,7 @@ let jwtInterceptor;
 export const LOG_IN = 'LOG_IN';
 export const LOG_OUT = 'LOG_OUT';
 export const CHECK_LOCALSTORAGE = 'CHECK_LOCALSTORAGE';
+export const CREATE_CATEGORY_MAPPING = 'CREATE_CATEGORY_MAPPING';
 
 export const JWT_STORAGE_KEY = 'jwt'
 export const USER_STORAGE_KEY = 'user'
@@ -40,6 +48,7 @@ export default {
       dispatch(`${BUDGER}/${INITIALIZE}`, { id, expenses, categories }, { root: true });
     }
   },
+
   [LOG_OUT]({ commit }) {
     commit(SET_TOKEN, null);
     commit(SET_USER, {});
@@ -50,6 +59,7 @@ export default {
     axios.interceptors.request.eject(jwtInterceptor);
 
   },
+
   async [CHECK_LOCALSTORAGE]({ dispatch }) {
     const jwt = localStorage.getItem(JWT_STORAGE_KEY)
     const user = localStorage.getItem(USER_STORAGE_KEY)
@@ -68,5 +78,12 @@ export default {
     } catch (err) {
       console.error(err) // fail miserably
     }
+  },
+
+  [CREATE_CATEGORY_MAPPING]({ state, dispatch }, { categoryId, mapping }) {
+    dispatch(`${SOCKET}/${EMIT}`,
+      { event: SET_CATEGORY_MAPPING, data: { categoryId, mapping } },
+      { root: true }
+    );
   }
 };

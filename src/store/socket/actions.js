@@ -1,7 +1,8 @@
 import io from 'socket.io-client';
 
-import { BUDGER } from 'src/store/namespace'
+import { BUDGER, USER } from 'src/store/namespace'
 import { SET_EXPENSE_CATEGORY } from 'src/store/budger/mutations'
+import { SET_CATEGORY_MAPPING } from 'src/store/user/mutations'
 
 const socket = io(process.env.API_URL);
 
@@ -16,12 +17,15 @@ export const EMIT = 'EMIT';
 export default {
   [INITIALIZE]({ commit }) {
     socket.on(`${SERVER}:${SET_EXPENSE_CATEGORY}`, (data) => {
-      console.log(data)
       commit(`${BUDGER}/${SET_EXPENSE_CATEGORY}`, data, { root: true })
+    })
+    socket.on(`${SERVER}:${SET_CATEGORY_MAPPING}`, (data) => {
+      commit(`${USER}/${SET_CATEGORY_MAPPING}`, data, { root: true })
     })
   },
   [EMIT](store, { event, data }) {
     /// attach tokens here
+    console.log(`${CLIENT}:${event}`)
     socket.emit(`${CLIENT}:${event}`, data);
   },
   // [EMIT_SET_EXPENSE_CATEGORY](store, { event, data }) {
