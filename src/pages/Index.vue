@@ -11,42 +11,26 @@
         <q-table
           title="Expenses"
           row-key="id"
-          :data="expensesData"
+          :data="budgerExpenses"
           :columns="expensesColumns"
         >
           <template v-slot:body-cell-category="props">
             <q-td :props="props">
               <q-select
-                use-input
                 dense
+                use-input
+                map-options
                 label="Category"
                 style="width: 250px"
-                v-model="model"
-                :options="options"
-                @filter="filterFn"
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No results
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
+                option-value="id"
+                option-label="title"
+                :value="props.row.category.id"
+                :options="userCategories"
+                @input="handleCategoryInput($event, props.row.id)"
+              />
             </q-td>
           </template>
         </q-table>
-        <div
-          class="expense"
-          v-for="({id, amount, reference, category }) in budgerExpenses"
-          :key="id"
-        >
-          {{id}}
-          {{amount}}
-          {{reference}}
-          {{category.title}}
-
-        </div>
       </div>
       <div
         class="list"
@@ -99,19 +83,19 @@ import { USER, BUDGER } from 'src/store/namespace'
 import { IS_AUTHENTICATED, USER_BUDGERS, USER_CATEGORIES } from 'src/store/user/getters'
 import { BUDGER_EXPENSES } from 'src/store/budger/getters'
 import useApi, { BUDGERS_API } from 'src/use/useApi'
+import { UPDATE_ENTRY_CATEGORY } from 'src/store/budger/actions';
 
 const { mapGetters: userGetters } = createNamespacedHelpers(USER);
-const { mapGetters: budgerGetters } = createNamespacedHelpers(BUDGER);
-
-const stringOptions = [
-  'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
-]
+const {
+  mapGetters: budgerGetters,
+  mapActions: budgerActions
+} = createNamespacedHelpers(BUDGER);
 
 export default {
   data () {
     return {
       model: null,
-      options: stringOptions
+      expensesData: [],
     }
   },
   components: {
@@ -137,17 +121,6 @@ export default {
     hasBudgers: ({ userBudgers }) => !!userBudgers.length,
     hasCategories: ({ userCategories }) => !!userCategories.length,
     hasExpenses: ({ budgerExpenses }) => !!budgerExpenses.length,
-    expensesData: ({ budgerExpenses }) => budgerExpenses.map(({
-      id,
-      amount,
-      category,
-      reference
-    }) => ({
-      id,
-      amount,
-      category,
-      reference
-    })),
     expensesColumns: () => ([
       {
         field: ({ id }) => id,
@@ -161,7 +134,7 @@ export default {
         name: 'amount',
       },
       {
-        field: ({ category }) => category.title,
+        field: ({ category }) => category.id,
         label: 'Category',
         name: 'category',
       },
@@ -170,16 +143,46 @@ export default {
         label: 'Ref',
         name: 'reference',
       },
-    ])
+    ]),
+  },
+  // watch: {
+  //   budgerExpenses: {
+  //     immediate: true,
+  //     handler: function () {
+  //       this.setExpensesData()
+  //     }
+  //   }
+  // },
+  mounted () {
+    this.setExpensesData();
   },
   methods: {
+    ...budgerActions({
+      updateEntryCategory: UPDATE_ENTRY_CATEGORY
+    }),
     async onSubmit () {
       await this.callApi(BUDGERS_API)
+    },
+    handleCategoryInput (category, expenseId) {
+      this.updateEntryCategory({ category, expenseId })
+    },
+    setExpensesData () {
+      this.expensesData = this.budgerExpenses.map(({
+        id,
+        amount,
+        category,
+        reference
+      }) => ({
+        id,
+        amount,
+        category,
+        reference
+      }))
     },
     filterFn (val, update) {
       if (val === '') {
         update(() => {
-          this.options = stringOptions
+          // this.options = stringOptions
 
           // with Quasar v1.7.4+
           // here you have access to "ref" which
@@ -190,7 +193,7 @@ export default {
 
       update(() => {
         const needle = val.toLowerCase()
-        this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+        // this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
       })
     }
   }
