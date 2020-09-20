@@ -201,26 +201,30 @@ export default {
     handleCategoryInput (category, expenseId) {
       this.updateEntryCategory({ category, expenseId })
     },
+    mapCategories (reference) {
+      return this.userCategories.find((category) => {
+        return category.mappings?.some((mapping) => {
+          return reference.includes(mapping.toLowerCase())
+        })
+      })
+    },
     handleCsvInput (e) {
       if (!e) return;
 
       Papa.parse(e, {
         delimiter: ';',
         complete: ({ data }) => {
-          const result = data.map((row, i) => ({
-            id: null,
-            date: row[1],
-            amount: +row[3]?.replace(',', '.'),
-            reference: `${row[4]} ${row[9]} ${row[12]}`,
-            category: {},
-          })).filter(({ amount }) => !isNaN(amount));
-          const dateFormats = {
-            date: 'dddd, MMMM Do YYYY',
-            datetime: 'dddd, MMMM Do YYYY HH:mm',
-            time: 'HH:mm A',
-            timestamp: 'dddd, MMMM Do YYYY HH:mm',
-          };
-          this.importedExpenses = result
+          this.importedExpenses = data.map((row, i) => {
+            const reference = `${row[4]} ${row[9]} ${row[12]}`;
+            const category = this.mapCategories(reference.toLowerCase()) ?? {};
+            return {
+              category,
+              reference,
+              id: null,
+              date: row[1],
+              amount: +row[3]?.replace(',', '.'),
+            }
+          }).filter(({ amount }) => !isNaN(amount))
         },
         error: (error) => {
           console.log(error); // TODO - add error handling

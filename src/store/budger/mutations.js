@@ -7,6 +7,7 @@ export default {
     state.expenses = expenses;
   },
   [SET_EXPENSE_CATEGORY](state, { category, expenseId }) {
+    console.log({ category, expenseId })
     state.expenses = state.expenses.map((expense) => {
       if (expense.id === expenseId) expense.category = category
       return expense

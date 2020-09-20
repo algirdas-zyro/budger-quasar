@@ -14,7 +14,7 @@ export default {
   },
   [SET_CATEGORY_MAPPING](state, { categoryId, mapping }) {
     state.categories = state.categories.map((category) => {
-      if (category.id === categoryId) category.mappings = [...category.mappings, mapping]
+      if (category.id === categoryId) category.mappings = [mapping, ...category.mappings]
       return category
     })
   }
