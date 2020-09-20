@@ -4,19 +4,22 @@ import { BUDGER, SOCKET } from 'src/store/namespace';
 
 import { EMIT } from 'src/store/socket/actions'
 import { INITIALIZE } from 'src/store/budger/actions';
+import { BUDGER_ID } from 'src/store/budger/getters';
 import {
   SET_USER,
   SET_TOKEN,
-  SET_CATEGORY_MAPPING
+  SET_CATEGORY,
+  SET_CATEGORY_MAPPING,
 } from 'src/store/user/mutations';
 
-import { JWT_TOKEN } from './getters';
+import { JWT_TOKEN, USER_ID } from './getters';
 
 let jwtInterceptor;
 
 export const LOG_IN = 'LOG_IN';
 export const LOG_OUT = 'LOG_OUT';
 export const CHECK_LOCALSTORAGE = 'CHECK_LOCALSTORAGE';
+export const CREATE_CATEGORY = 'CREATE_CATEGORY';
 export const CREATE_CATEGORY_MAPPING = 'CREATE_CATEGORY_MAPPING';
 
 export const JWT_STORAGE_KEY = 'jwt'
@@ -83,6 +86,18 @@ export default {
   [CREATE_CATEGORY_MAPPING]({ state, dispatch }, { categoryId, mapping }) {
     dispatch(`${SOCKET}/${EMIT}`,
       { event: SET_CATEGORY_MAPPING, data: { categoryId, mapping } },
+      { root: true }
+    );
+  },
+
+  [CREATE_CATEGORY]({ getters, rootGetters, dispatch }, title) {
+    const category = {
+      title,
+      userId: getters[USER_ID],
+      budgerId: rootGetters[`${BUDGER}/${BUDGER_ID}`]
+    }
+    dispatch(`${SOCKET}/${EMIT}`,
+      { event: SET_CATEGORY, data: category },
       { root: true }
     );
   }

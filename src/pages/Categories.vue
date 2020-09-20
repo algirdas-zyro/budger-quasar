@@ -98,7 +98,7 @@
 import { createNamespacedHelpers } from 'vuex';
 
 import { USER } from 'src/store/namespace';
-import { CREATE_CATEGORY_MAPPING } from 'src/store/user/actions';
+import { CREATE_CATEGORY, CREATE_CATEGORY_MAPPING } from 'src/store/user/actions';
 
 import { HOME_PATH } from 'src/router/routes';
 
@@ -129,7 +129,7 @@ export default {
     ...userGetters({
       userCategories: USER_CATEGORIES
     }),
-    categoriesData: ({ userCategories }) => userCategories.map(({
+    categoriesData: ({ userCategories }) => userCategories?.map(({
       id,
       title,
       mappings,
@@ -153,22 +153,24 @@ export default {
   },
   methods: {
     ...userActions({
-      createCategoryMapping: CREATE_CATEGORY_MAPPING
+      createCategory: CREATE_CATEGORY,
+      createCategoryMapping: CREATE_CATEGORY_MAPPING,
     }),
     onMappingsSubmit (categoryId) {
       this.createCategoryMapping({ categoryId, mapping: this.newMappingInput })
       this.newMappingInput = ''
     },
     async onSubmit () {
-      await this.callApi(CATEGORIES_API, {
-        method: 'POST',
-        data: {
-          title: this.title
-        }
-      })
-      if (this.result) {
-        console.log('sccess')
-      }
+      this.createCategory(this.title)
+      // await this.callApi(CATEGORIES_API, {
+      //   method: 'POST',
+      //   data: {
+      //     title: this.title
+      //   }
+      // })
+      // if (this.result) {
+      //   console.log('sccess')
+      // }
     },
   }
 }

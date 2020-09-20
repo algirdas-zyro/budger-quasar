@@ -1,5 +1,6 @@
 export const SET_USER = 'SET_USER';
 export const SET_TOKEN = 'SET_TOKEN';
+export const SET_CATEGORY = 'SET_CATEGORY';
 export const SET_CATEGORY_MAPPING = 'SET_CATEGORY_MAPPING';
 
 export default {
@@ -11,6 +12,11 @@ export default {
   },
   [SET_TOKEN](state, payload) {
     state.token = payload;
+  },
+  [SET_CATEGORY](state, category) {
+    console.log(state.categories)
+    state.categories = [...state.categories, category]
+    console.log(state.categories)
   },
   [SET_CATEGORY_MAPPING](state, { categoryId, mapping }) {
     state.categories = state.categories.map((category) => {
