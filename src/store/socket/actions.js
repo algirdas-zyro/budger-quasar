@@ -6,6 +6,7 @@ import {
   SET_CATEGORY,
   REMOVE_CATEGORY,
   SET_CATEGORY_MAPPING,
+  REMOVE_CATEGORY_MAPPING,
  } from 'src/store/user/mutations'
 
 const socket = io(process.env.API_URL);
@@ -22,23 +23,23 @@ export default {
   [INITIALIZE]({ commit }) {
     socket.on(`${SERVER}:${SET_EXPENSE_CATEGORY}`, (data) => {
       commit(`${BUDGER}/${SET_EXPENSE_CATEGORY}`, data, { root: true })
-    })
-    socket.on(`${SERVER}:${SET_CATEGORY_MAPPING}`, (data) => {
-      commit(`${USER}/${SET_CATEGORY_MAPPING}`, data, { root: true })
-    })
+    });
     socket.on(`${SERVER}:${SET_CATEGORY}`, (data) => {
       commit(`${USER}/${SET_CATEGORY}`, data, { root: true })
-    })
+    });
     socket.on(`${SERVER}:${REMOVE_CATEGORY}`, (data) => {
       commit(`${USER}/${REMOVE_CATEGORY}`, data, { root: true })
-    })
+    });
+    socket.on(`${SERVER}:${SET_CATEGORY_MAPPING}`, (data) => {
+      commit(`${USER}/${SET_CATEGORY_MAPPING}`, data, { root: true })
+    });
+    socket.on(`${SERVER}:${REMOVE_CATEGORY_MAPPING}`, (data) => {
+      commit(`${USER}/${REMOVE_CATEGORY_MAPPING}`, data, { root: true })
+    });
   },
   [EMIT](store, { event, data }) {
     /// attach tokens here
     console.log(`${CLIENT}:${event}`)
     socket.emit(`${CLIENT}:${event}`, data);
   },
-  // [EMIT_SET_EXPENSE_CATEGORY](store, { event, data }) {
-  //   socket.emit(`${CLIENT}:${SET_EXPENSE_CATEGORY}`, data);
-  // },
 };

@@ -9,7 +9,6 @@
 
       <template v-slot:header="props">
         <q-tr :props="props">
-          <q-th auto-width />
           <q-th
             v-for="col in props.cols"
             :key="col.name"
@@ -17,42 +16,29 @@
           >
             {{ col.label }}
           </q-th>
+          <q-th auto-width />
+          <q-th auto-width />
+          <q-th auto-width />
         </q-tr>
       </template>
 
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td auto-width>
-            <q-btn
-              size="sm"
-              round
-              dense
-              @click="props.expand = !props.expand"
-              :icon="props.expand ? 'remove' : 'add'"
+            {{props.row.title}}
+          </q-td>
+
+          <q-td style="white-space:normal">
+            <q-chip
+              removable
+              v-for="(mapping, index) in props.row.mappings"
+              :key="index"
+              @remove="handleRemoveMappingClick(props.row.id, mapping)"
+              :label="mapping"
             />
           </q-td>
-          <q-td
-            v-for="col in props.cols"
-            :key="col.name"
-            :props="props"
-          >
-            {{ col.value }}
-          </q-td>
+
           <q-td auto-width>
-            <q-btn
-              size="sm"
-              round
-              dense
-              icon="delete"
-              @click="handleDeleteClick(props.row.id)"
-            />
-          </q-td>
-        </q-tr>
-        <q-tr
-          v-show="props.expand"
-          :props="props"
-        >
-          <q-td colspan="100%">
             <q-form @submit.prevent="onMappingsSubmit(props.row.id)">
               <div class="create">
                 <q-input
@@ -67,18 +53,16 @@
                 style="width:100%"
               />
             </q-form>
-            <div
-              class="inputs"
-              v-if="props.row.mappings"
-            >
-              <div
-                class="mappins"
-                v-for="(mapping, index) in props.row.mappings"
-                :key="index"
-              >
-                <q-input :value="mapping" />
-              </div>
-            </div>
+          </q-td>
+
+          <q-td auto-width>
+            <q-btn
+              size="sm"
+              round
+              dense
+              icon="delete"
+              @click="handleDeleteClick(props.row.id)"
+            />
           </q-td>
         </q-tr>
       </template>
@@ -110,6 +94,7 @@ import {
   CREATE_CATEGORY,
   DELETE_CATEGORY,
   CREATE_CATEGORY_MAPPING,
+  DELETE_CATEGORY_MAPPING,
 } from 'src/store/user/actions';
 
 import { HOME_PATH } from 'src/router/routes';
@@ -152,15 +137,11 @@ export default {
     })),
     categoriesColumns: () => ([
       {
-        field: ({ id }) => id,
-        label: 'ID',
-        name: 'id',
-      },
-      {
         field: ({ title }) => title,
         label: 'Title',
         name: 'title',
-      },
+        align: 'left'
+      }
     ])
   },
   methods: {
@@ -168,9 +149,13 @@ export default {
       createCategory: CREATE_CATEGORY,
       deleteCategory: DELETE_CATEGORY,
       createCategoryMapping: CREATE_CATEGORY_MAPPING,
+      deleteCategoryMapping: DELETE_CATEGORY_MAPPING,
     }),
     handleDeleteClick (id) {
       this.deleteCategory(id)
+    },
+    handleRemoveMappingClick (categoryId, mapping) {
+      this.deleteCategoryMapping({ categoryId, mapping })
     },
     onMappingsSubmit (categoryId) {
       this.createCategoryMapping({ categoryId, mapping: this.newMappingInput })
@@ -178,15 +163,6 @@ export default {
     },
     async handleSubmit () {
       this.createCategory(this.title)
-      // await this.callApi(CATEGORIES_API, {
-      //   method: 'POST',
-      //   data: {
-      //     title: this.title
-      //   }
-      // })
-      // if (this.result) {
-      //   console.log('sccess')
-      // }
     },
   }
 }

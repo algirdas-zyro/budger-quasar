@@ -11,6 +11,7 @@ import {
   SET_CATEGORY,
   REMOVE_CATEGORY,
   SET_CATEGORY_MAPPING,
+  REMOVE_CATEGORY_MAPPING,
 } from 'src/store/user/mutations';
 
 import { JWT_TOKEN, USER_ID } from './getters';
@@ -23,6 +24,7 @@ export const CHECK_LOCALSTORAGE = 'CHECK_LOCALSTORAGE';
 export const CREATE_CATEGORY = 'CREATE_CATEGORY';
 export const DELETE_CATEGORY = 'DELETE_CATEGORY';
 export const CREATE_CATEGORY_MAPPING = 'CREATE_CATEGORY_MAPPING';
+export const DELETE_CATEGORY_MAPPING = 'DELETE_CATEGORY_MAPPING';
 
 export const JWT_STORAGE_KEY = 'jwt'
 export const USER_STORAGE_KEY = 'user'
@@ -85,13 +87,6 @@ export default {
     }
   },
 
-  [CREATE_CATEGORY_MAPPING]({ state, dispatch }, { categoryId, mapping }) {
-    dispatch(`${SOCKET}/${EMIT}`,
-      { event: SET_CATEGORY_MAPPING, data: { categoryId, mapping } },
-      { root: true }
-    );
-  },
-
   [CREATE_CATEGORY]({ getters, rootGetters, dispatch }, title) {
     const category = {
       title,
@@ -109,5 +104,20 @@ export default {
       { event: REMOVE_CATEGORY, data: id },
       { root: true }
     );
-  }
+  },
+
+  [CREATE_CATEGORY_MAPPING]({ dispatch }, { categoryId, mapping }) {
+    dispatch(`${SOCKET}/${EMIT}`,
+      { event: SET_CATEGORY_MAPPING, data: { categoryId, mapping } },
+      { root: true }
+    );
+  },
+
+  [DELETE_CATEGORY_MAPPING]({ dispatch }, { categoryId, mapping }) {
+    console.log({categoryId, mapping})
+    dispatch(`${SOCKET}/${EMIT}`,
+      { event: REMOVE_CATEGORY_MAPPING, data: { categoryId, mapping } },
+      { root: true }
+    );
+  },
 };
