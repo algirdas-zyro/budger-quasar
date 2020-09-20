@@ -3,6 +3,7 @@ export const LOGIN_PATH = '/login'
 export const REGISTER_PATH = '/register'
 export const CREATE_PATH = '/create'
 export const CATEGORIES_PATH = '/categories'
+export const IMPORTER_PATH = '/importer'
 
 const routes = [
   {
@@ -14,6 +15,7 @@ const routes = [
       { path: REGISTER_PATH, component: () => import('pages/Register.vue') },
       { path: CREATE_PATH, component: () => import('pages/Create.vue') },
       { path: CATEGORIES_PATH, component: () => import('pages/Categories.vue') },
+      { path: IMPORTER_PATH, component: () => import('pages/Importer.vue') },
     ]
   },
 

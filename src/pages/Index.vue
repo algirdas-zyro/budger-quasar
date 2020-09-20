@@ -8,12 +8,6 @@
         class="expenses"
         v-if="hasExpenses"
       >
-
-        <q-file
-          clearable
-          label="CSV"
-          @input="handleCsvInput"
-        />
         <q-table
           title="Expenses"
           row-key="id"
@@ -34,36 +28,6 @@
                 :options="userCategories"
                 @input="handleCategoryInput($event, props.row.id)"
               />
-            </q-td>
-          </template>
-        </q-table>
-
-        <q-table
-          title="Expenses"
-          row-key="reference"
-          :pagination="{rowsPerPage:0}"
-          :data="importedExpenses"
-          :columns="expensesColumns"
-        >
-          <template v-slot:body-cell-category="props">
-            <q-td :props="props">
-              <q-select
-                v-if="props.row.category"
-                dense
-                map-options
-                label="Category"
-                style="width: 250px"
-                option-value="id"
-                option-label="title"
-                :value="props.row.category.id"
-                :options="userCategories"
-                @input="handleCategoryInput($event, props.row.id)"
-              />
-            </q-td>
-          </template>
-          <template v-slot:body-cell-reference="props">
-            <q-td :props="props">
-              {{props.row.reference}}
             </q-td>
           </template>
         </q-table>
@@ -130,20 +94,11 @@ const {
 } = createNamespacedHelpers(BUDGER);
 
 export default {
-  data () {
-    return {
-      csv: null,
-      importedExpenses: []
-    }
-  },
   components: {
     LoginForm
   },
   setup () {
-    const { callApi } = useApi()
-
     return {
-      callApi,
       CREATE_PATH,
     }
   },
@@ -200,36 +155,6 @@ export default {
     }),
     handleCategoryInput (category, expenseId) {
       this.updateEntryCategory({ category, expenseId })
-    },
-    mapCategories (reference) {
-      return this.userCategories.find((category) => {
-        return category.mappings?.some((mapping) => {
-          return reference.includes(mapping.toLowerCase())
-        })
-      })
-    },
-    handleCsvInput (e) {
-      if (!e) return;
-
-      Papa.parse(e, {
-        delimiter: ';',
-        complete: ({ data }) => {
-          this.importedExpenses = data.map((row, i) => {
-            const reference = `${row[4]} ${row[9]} ${row[12]}`;
-            const category = this.mapCategories(reference.toLowerCase()) ?? {};
-            return {
-              category,
-              reference,
-              id: null,
-              date: row[1],
-              amount: +row[3]?.replace(',', '.'),
-            }
-          }).filter(({ amount }) => !isNaN(amount))
-        },
-        error: (error) => {
-          console.log(error); // TODO - add error handling
-        },
-      });
     }
   }
 }

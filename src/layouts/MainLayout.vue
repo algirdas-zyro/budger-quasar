@@ -22,6 +22,18 @@
             @click="navigate"
           />
         </router-link>
+        <router-link
+          :to="IMPORTER_PATH"
+          v-slot="{ href, navigate, isActive, isExactActive }"
+        >
+          <q-btn
+            type="a"
+            label="importer"
+            :class="[isActive && 'router-link-active', isExactActive && 'router-link-exact-active']"
+            :href="href"
+            @click="navigate"
+          />
+        </router-link>
         <q-toolbar-title>
           <router-link :to="HOME_PATH">
             Quasar App
@@ -110,6 +122,7 @@ import {
   LOGIN_PATH,
   REGISTER_PATH,
   CATEGORIES_PATH,
+  IMPORTER_PATH,
 } from 'src/router/routes'
 
 import { USER_EMAIL, IS_AUTHENTICATED } from 'src/store/user/getters';
@@ -126,6 +139,7 @@ export default {
       LOGIN_PATH,
       REGISTER_PATH,
       CATEGORIES_PATH,
+      IMPORTER_PATH,
     }
   },
   data () {
