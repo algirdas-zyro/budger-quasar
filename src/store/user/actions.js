@@ -8,10 +8,6 @@ import { BUDGER_ID } from 'src/store/budger/getters';
 import {
   SET_USER,
   SET_TOKEN,
-  SET_CATEGORY,
-  REMOVE_CATEGORY,
-  SET_CATEGORY_MAPPING,
-  REMOVE_CATEGORY_MAPPING,
 } from 'src/store/user/mutations';
 
 import { JWT_TOKEN, USER_ID } from './getters';
@@ -94,21 +90,21 @@ export default {
       budgerId: rootGetters[`${BUDGER}/${BUDGER_ID}`]
     }
     dispatch(`${SOCKET}/${EMIT}`,
-      { event: SET_CATEGORY, data: category },
+      { event: CREATE_CATEGORY, data: category },
       { root: true }
     );
   },
 
   [DELETE_CATEGORY]({ dispatch }, id) {
     dispatch(`${SOCKET}/${EMIT}`,
-      { event: REMOVE_CATEGORY, data: id },
+      { event: DELETE_CATEGORY, data: id },
       { root: true }
     );
   },
 
   [CREATE_CATEGORY_MAPPING]({ dispatch }, { categoryId, mapping }) {
     dispatch(`${SOCKET}/${EMIT}`,
-      { event: SET_CATEGORY_MAPPING, data: { categoryId, mapping } },
+      { event: CREATE_CATEGORY_MAPPING, data: { categoryId, mapping } },
       { root: true }
     );
   },
@@ -116,7 +112,7 @@ export default {
   [DELETE_CATEGORY_MAPPING]({ dispatch }, { categoryId, mapping }) {
     console.log({categoryId, mapping})
     dispatch(`${SOCKET}/${EMIT}`,
-      { event: REMOVE_CATEGORY_MAPPING, data: { categoryId, mapping } },
+      { event: DELETE_CATEGORY_MAPPING, data: { categoryId, mapping } },
       { root: true }
     );
   },

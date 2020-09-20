@@ -14,7 +14,6 @@
     >
       <template v-slot:body-cell-category="props">
         <q-td :props="props">
-          {{props.row.index}}
           <q-select
             v-if="props.row.category"
             dense

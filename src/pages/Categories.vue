@@ -39,19 +39,21 @@
           </q-td>
 
           <q-td auto-width>
-            <q-form @submit.prevent="onMappingsSubmit(props.row.id)">
+            <q-form @submit="onMappingsSubmit(props.row.id)">
+
               <div class="create">
                 <q-input
-                  label="new mapping"
+                  bottom-slots
                   v-model="newMappingInput"
+                  label="new mapping"
+                >
+                </q-input>
+                <q-btn
+                  label="ADD"
+                  type="submit"
+                  color="primary"
                 />
               </div>
-              <q-btn
-                label="SAVE"
-                type="submit"
-                color="primary"
-                style="width:100%"
-              />
             </q-form>
           </q-td>
 
