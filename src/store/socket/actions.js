@@ -2,7 +2,11 @@ import io from 'socket.io-client';
 
 import { BUDGER, USER } from 'src/store/namespace'
 import { SET_EXPENSE_CATEGORY } from 'src/store/budger/mutations'
-import { SET_CATEGORY_MAPPING, SET_CATEGORY } from 'src/store/user/mutations'
+import {
+  SET_CATEGORY,
+  REMOVE_CATEGORY,
+  SET_CATEGORY_MAPPING,
+ } from 'src/store/user/mutations'
 
 const socket = io(process.env.API_URL);
 
@@ -24,6 +28,9 @@ export default {
     })
     socket.on(`${SERVER}:${SET_CATEGORY}`, (data) => {
       commit(`${USER}/${SET_CATEGORY}`, data, { root: true })
+    })
+    socket.on(`${SERVER}:${REMOVE_CATEGORY}`, (data) => {
+      commit(`${USER}/${REMOVE_CATEGORY}`, data, { root: true })
     })
   },
   [EMIT](store, { event, data }) {

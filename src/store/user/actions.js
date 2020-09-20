@@ -9,6 +9,7 @@ import {
   SET_USER,
   SET_TOKEN,
   SET_CATEGORY,
+  REMOVE_CATEGORY,
   SET_CATEGORY_MAPPING,
 } from 'src/store/user/mutations';
 
@@ -20,6 +21,7 @@ export const LOG_IN = 'LOG_IN';
 export const LOG_OUT = 'LOG_OUT';
 export const CHECK_LOCALSTORAGE = 'CHECK_LOCALSTORAGE';
 export const CREATE_CATEGORY = 'CREATE_CATEGORY';
+export const DELETE_CATEGORY = 'DELETE_CATEGORY';
 export const CREATE_CATEGORY_MAPPING = 'CREATE_CATEGORY_MAPPING';
 
 export const JWT_STORAGE_KEY = 'jwt'
@@ -98,6 +100,13 @@ export default {
     }
     dispatch(`${SOCKET}/${EMIT}`,
       { event: SET_CATEGORY, data: category },
+      { root: true }
+    );
+  },
+
+  [DELETE_CATEGORY]({ dispatch }, id) {
+    dispatch(`${SOCKET}/${EMIT}`,
+      { event: REMOVE_CATEGORY, data: id },
       { root: true }
     );
   }

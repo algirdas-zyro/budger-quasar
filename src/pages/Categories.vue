@@ -25,7 +25,6 @@
           <q-td auto-width>
             <q-btn
               size="sm"
-              color="accent"
               round
               dense
               @click="props.expand = !props.expand"
@@ -38,6 +37,15 @@
             :props="props"
           >
             {{ col.value }}
+          </q-td>
+          <q-td auto-width>
+            <q-btn
+              size="sm"
+              round
+              dense
+              icon="delete"
+              @click="handleDeleteClick(props.row.id)"
+            />
           </q-td>
         </q-tr>
         <q-tr
@@ -77,7 +85,7 @@
     </q-table>
 
     <q-form
-      @submit="onSubmit"
+      @submit="handleSubmit"
       class="q-gutter-md"
     >
       <q-input
@@ -98,7 +106,11 @@
 import { createNamespacedHelpers } from 'vuex';
 
 import { USER } from 'src/store/namespace';
-import { CREATE_CATEGORY, CREATE_CATEGORY_MAPPING } from 'src/store/user/actions';
+import {
+  CREATE_CATEGORY,
+  DELETE_CATEGORY,
+  CREATE_CATEGORY_MAPPING,
+} from 'src/store/user/actions';
 
 import { HOME_PATH } from 'src/router/routes';
 
@@ -154,13 +166,17 @@ export default {
   methods: {
     ...userActions({
       createCategory: CREATE_CATEGORY,
+      deleteCategory: DELETE_CATEGORY,
       createCategoryMapping: CREATE_CATEGORY_MAPPING,
     }),
+    handleDeleteClick (id) {
+      this.deleteCategory(id)
+    },
     onMappingsSubmit (categoryId) {
       this.createCategoryMapping({ categoryId, mapping: this.newMappingInput })
       this.newMappingInput = ''
     },
-    async onSubmit () {
+    async handleSubmit () {
       this.createCategory(this.title)
       // await this.callApi(CATEGORIES_API, {
       //   method: 'POST',
