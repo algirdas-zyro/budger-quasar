@@ -18,6 +18,7 @@ export const LOG_IN = 'LOG_IN';
 export const LOG_OUT = 'LOG_OUT';
 export const CHECK_LOCALSTORAGE = 'CHECK_LOCALSTORAGE';
 export const CREATE_CATEGORY = 'CREATE_CATEGORY';
+export const UPDATE_CATEGORY = 'UPDATE_CATEGORY';
 export const DELETE_CATEGORY = 'DELETE_CATEGORY';
 export const CREATE_CATEGORY_MAPPING = 'CREATE_CATEGORY_MAPPING';
 export const DELETE_CATEGORY_MAPPING = 'DELETE_CATEGORY_MAPPING';
@@ -91,6 +92,13 @@ export default {
     }
     dispatch(`${SOCKET}/${EMIT}`,
       { event: CREATE_CATEGORY, data: category },
+      { root: true }
+    );
+  },
+
+  [UPDATE_CATEGORY]({ dispatch }, category ) {
+    dispatch(`${SOCKET}/${EMIT}`,
+      { event: UPDATE_CATEGORY, data: category },
       { root: true }
     );
   },

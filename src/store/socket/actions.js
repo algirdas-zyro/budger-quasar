@@ -4,6 +4,7 @@ import { BUDGER, USER } from 'src/store/namespace'
 import { SET_EXPENSE_CATEGORY } from 'src/store/budger/mutations'
 import {
   SET_CATEGORY,
+  UPDATE_CATEGORY,
   UNSET_CATEGORY,
   SET_CATEGORY_MAPPING,
   UNSET_CATEGORY_MAPPING,
@@ -18,6 +19,7 @@ export const INITIALIZE = 'INITIALIZE';
 export const EMIT = 'EMIT';
 
 export const CATEGORY_CREATED = 'CATEGORY_CREATED';
+export const CATEGORY_UPDATED = 'CATEGORY_UPDATED';
 export const CATEGORY_DELETED = 'CATEGORY_DELETED';
 export const CATEGORY_MAPPING_CREATED = 'CATEGORY_MAPPING_CREATED';
 export const EXPENSE_CATEGORY_CREATED = 'EXPENSE_CATEGORY_CREATED';
@@ -28,11 +30,14 @@ export default {
     socket.on(`${SERVER}:${CATEGORY_CREATED}`, (data) => {
       commit(`${USER}/${SET_CATEGORY}`, data, { root: true })
     });
-    socket.on(`${SERVER}:${EXPENSE_CATEGORY_CREATED}`, (data) => {
-      commit(`${BUDGER}/${SET_EXPENSE_CATEGORY}`, data, { root: true })
+    socket.on(`${SERVER}:${CATEGORY_UPDATED}`, (data) => {
+      commit(`${USER}/${UPDATE_CATEGORY}`, data, { root: true })
     });
     socket.on(`${SERVER}:${CATEGORY_DELETED}`, (data) => {
       commit(`${USER}/${UNSET_CATEGORY}`, data, { root: true })
+    });
+    socket.on(`${SERVER}:${EXPENSE_CATEGORY_CREATED}`, (data) => {
+      commit(`${BUDGER}/${SET_EXPENSE_CATEGORY}`, data, { root: true })
     });
     socket.on(`${SERVER}:${CATEGORY_MAPPING_CREATED}`, (data) => {
       commit(`${USER}/${SET_CATEGORY_MAPPING}`, data, { root: true })

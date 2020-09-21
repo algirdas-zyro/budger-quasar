@@ -1,6 +1,7 @@
 export const SET_USER = 'SET_USER';
 export const SET_TOKEN = 'SET_TOKEN';
 export const SET_CATEGORY = 'SET_CATEGORY';
+export const UPDATE_CATEGORY = 'UPDATE_CATEGORY';
 export const UNSET_CATEGORY = 'UNSET_CATEGORY';
 export const SET_CATEGORY_MAPPING = 'SET_CATEGORY_MAPPING';
 export const UNSET_CATEGORY_MAPPING = 'UNSET_CATEGORY_MAPPING';
@@ -17,6 +18,15 @@ export default {
   },
   [SET_CATEGORY](state, category) {
     state.categories = [...state.categories, category]
+  },
+  [UPDATE_CATEGORY](state, updatedCategory) {
+    state.categories = state.categories.map((category) => {
+      console.log(updatedCategory.id, category.id)
+      if (category.id === updatedCategory.id) {
+        console.log(updatedCategory.title)
+      }
+      return category.id === updatedCategory.id ? updatedCategory : category
+    })
   },
   [UNSET_CATEGORY](state, id) {
     state.categories = state.categories.filter((category)=> category.id !==id)

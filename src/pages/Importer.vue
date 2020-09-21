@@ -41,7 +41,6 @@
 import { createNamespacedHelpers } from 'vuex';
 import Papa from 'papaparse';
 import moment from 'moment';
-import Vue from 'Vue';
 
 import { USER, BUDGER } from 'src/store/namespace'
 import { USER_CATEGORIES } from 'src/store/user/getters'

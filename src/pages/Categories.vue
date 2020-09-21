@@ -25,7 +25,26 @@
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td auto-width>
-            {{props.row.title}}
+            <q-form @submit="handleTitleUpdateSubmit(props.row.index)">
+              <q-input
+                bottom-slots
+                v-model="props.row.title"
+                label="new mapping"
+                :ref="`titleInput${props.row.id}`"
+                :readonly="props.row.readonly"
+              >
+                <template v-slot:append>
+                  <q-btn
+                    dense
+                    flat
+                    :icon="props.row.readonly ? 'edit' : 'send'"
+                    type="submit"
+                    color="primary"
+                    @click="handleTitleBtnClick(props.row.index)"
+                  />
+                </template>
+              </q-input>
+            </q-form>
           </q-td>
 
           <q-td style="white-space:normal">
@@ -39,20 +58,25 @@
           </q-td>
 
           <q-td auto-width>
-            <q-form @submit="onMappingsSubmit(props.row.id)">
+            <q-form @submit="handlMappingsSubmit(props.row.id, props.row.index)">
 
               <div class="create">
                 <q-input
                   bottom-slots
-                  v-model="newMappingInput"
+                  v-model="props.row.newMappingInput"
                   label="new mapping"
                 >
+                  <template v-slot:append>
+                    <q-btn
+                      dense
+                      flat
+                      icon="send"
+                      type="submit"
+                      color="primary"
+                      @click="handlMappingsSubmit(props.row.id, props.row.index)"
+                    />
+                  </template>
                 </q-input>
-                <q-btn
-                  label="ADD"
-                  type="submit"
-                  color="primary"
-                />
               </div>
             </q-form>
           </q-td>
@@ -94,6 +118,7 @@ import { createNamespacedHelpers } from 'vuex';
 import { USER } from 'src/store/namespace';
 import {
   CREATE_CATEGORY,
+  UPDATE_CATEGORY,
   DELETE_CATEGORY,
   CREATE_CATEGORY_MAPPING,
   DELETE_CATEGORY_MAPPING,
@@ -104,51 +129,57 @@ import { HOME_PATH } from 'src/router/routes';
 import useApi, { CATEGORIES_API } from 'src/use/useApi'
 import { USER_CATEGORIES } from 'src/store/user/getters';
 
-const { mapActions: userActions, mapGetters: userGetters } = createNamespacedHelpers(USER);
+const {
+  mapActions: userActions,
+  mapGetters: userGetters
+} = createNamespacedHelpers(USER);
 
 export default {
   data () {
     return {
       title: '',
-      newMappingInput: '',
+      categoriesData: [],
     }
   },
-  setup () {
-    const {
-      result,
-      callApi
-    } = useApi()
-
-    return {
-      result,
-      callApi
-    }
+  watch: {
+    // Whenever the movie prop changes, fetch new data
+    userCategories: {
+      // Will fire as soon as the component is created
+      immediate: true,
+      handler (userCategories, previousCategories) {
+        if (userCategories !== previousCategories) {
+          console.log('hit?')
+          this.categoriesData = userCategories?.map(({
+            id,
+            title,
+            mappings,
+          }, index) => ({
+            id,
+            index,
+            title,
+            mappings,
+            readonly: true,
+            newMappingInput: ''
+          }))
+        }
+      }
+    },
   },
   computed: {
     ...userGetters({
       userCategories: USER_CATEGORIES
     }),
-    categoriesData: ({ userCategories }) => userCategories?.map(({
-      id,
-      title,
-      mappings,
-    }) => ({
-      id,
-      title,
-      mappings,
-    })),
-    categoriesColumns: () => ([
-      {
-        field: ({ title }) => title,
-        label: 'Title',
-        name: 'title',
-        align: 'left'
-      }
-    ])
+    categoriesColumns: () => ([{
+      field: ({ title }) => title,
+      label: 'Title',
+      name: 'title',
+      align: 'left'
+    }])
   },
   methods: {
     ...userActions({
       createCategory: CREATE_CATEGORY,
+      updateCategory: UPDATE_CATEGORY,
       deleteCategory: DELETE_CATEGORY,
       createCategoryMapping: CREATE_CATEGORY_MAPPING,
       deleteCategoryMapping: DELETE_CATEGORY_MAPPING,
@@ -159,9 +190,26 @@ export default {
     handleRemoveMappingClick (categoryId, mapping) {
       this.deleteCategoryMapping({ categoryId, mapping })
     },
-    onMappingsSubmit (categoryId) {
-      this.createCategoryMapping({ categoryId, mapping: this.newMappingInput })
-      this.newMappingInput = ''
+    handlMappingsSubmit (categoryId, index) {
+      const { newMappingInput } = this.categoriesData[index]
+      this.createCategoryMapping({ categoryId, mapping: newMappingInput })
+      this.categoriesData[index].newMappingInput = ''
+    },
+    handleTitleBtnClick (index) {
+      const category = this.categoriesData[index];
+      if (category.readonly) {
+        this.categoriesData[index].readonly = false;
+        this.$refs[`titleInput${category.id}`].focus()
+      } else {
+        this.handleTitleUpdateSubmit(index);
+      }
+
+    },
+    handleTitleUpdateSubmit (index) {
+      const category = this.categoriesData[index];
+      this.categoriesData.readonly = true;
+      delete category.index;
+      this.updateCategory(category);
     },
     async handleSubmit () {
       this.createCategory(this.title)
