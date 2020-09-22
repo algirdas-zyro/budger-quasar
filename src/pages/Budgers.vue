@@ -1,9 +1,9 @@
 <template>
   <q-page class="create">
     <q-table
-      title="User Categories"
-      :data="categoriesData"
-      :columns="categoriesColumns"
+      title="My Budgers"
+      :data="budgersData"
+      :columns="budgersColumns"
       :pagination="{rowsPerPage:0}"
       row-key="id"
     >
@@ -30,7 +30,7 @@
               <q-input
                 bottom-slots
                 v-model="props.row.title"
-                label="new mapping"
+                label="Budger Title"
                 :ref="`titleInput${props.row.id}`"
                 :readonly="props.row.readonly"
               >
@@ -51,21 +51,21 @@
           <q-td style="white-space:normal">
             <q-chip
               removable
-              v-for="(mapping, index) in props.row.mappings"
+              v-for="(mapping, index) in props.row.collaborators"
               :key="index"
-              @remove="handleRemoveMappingClick(props.row.id, mapping)"
+              @remove="handleRemoveCollaboratorClick(props.row.id, mapping)"
               :label="mapping"
             />
           </q-td>
 
           <q-td auto-width>
-            <q-form @submit="handlMappingsSubmit(props.row.id, props.row.index)">
+            <q-form @submit="handlCollaboratorsSubmit(props.row.id, props.row.index)">
 
               <div class="create">
                 <q-input
                   bottom-slots
-                  v-model="props.row.newMappingInput"
-                  label="new mapping"
+                  v-model="props.row.newCollaboratorInput"
+                  label="new collaborator"
                 >
                   <template v-slot:append>
                     <q-btn
@@ -74,7 +74,7 @@
                       icon="send"
                       type="submit"
                       color="primary"
-                      @click="handlMappingsSubmit(props.row.id, props.row.index)"
+                      @click="handlCollaboratorsSubmit(props.row.id, props.row.index)"
                     />
                   </template>
                 </q-input>
@@ -118,17 +118,17 @@ import { createNamespacedHelpers } from 'vuex';
 
 import { USER } from 'src/store/namespace';
 import {
-  CREATE_CATEGORY,
-  UPDATE_CATEGORY,
-  DELETE_CATEGORY,
-  CREATE_CATEGORY_MAPPING,
-  DELETE_CATEGORY_MAPPING,
+  CREATE_BUDGER,
+  UPDATE_BUDGER,
+  DELETE_BUDGER,
+  CREATE_BUDGER_COLLABORATOR,
+  DELETE_BUDGER_COLLABORATOR,
 } from 'src/store/user/actions';
 
 import { HOME_PATH } from 'src/router/routes';
 
-import useApi, { CATEGORIES_API } from 'src/use/useApi'
-import { USER_CATEGORIES } from 'src/store/user/getters';
+import useApi, { BUDGERS_API } from 'src/use/useApi'
+import { USER_BUDGERS } from 'src/store/user/getters';
 
 const {
   mapActions: userActions,
@@ -136,31 +136,49 @@ const {
 } = createNamespacedHelpers(USER);
 
 export default {
+  setup () {
+    const {
+      isLoading,
+      hasLoaded,
+      hasFailed,
+      errorMessage,
+      result,
+      callApi
+    } = useApi()
+
+    return {
+      isLoading,
+      hasLoaded,
+      hasFailed,
+      errorMessage,
+      result,
+      callApi
+    }
+  },
   data () {
     return {
       title: '',
-      categoriesData: [],
+      budgersData: [],
     }
   },
   watch: {
     // Whenever the movie prop changes, fetch new data
-    userCategories: {
+    userBudgers: {
       // Will fire as soon as the component is created
       immediate: true,
-      handler (userCategories, previousCategories) {
-        if (userCategories !== previousCategories) {
-          console.log('hit?')
-          this.categoriesData = userCategories?.map(({
+      handler (userBudgers, previousBudgers) {
+        if (userBudgers !== previousBudgers) {
+          this.budgersData = userBudgers?.map(({
             id,
             title,
-            mappings,
+            collaborators,
           }, index) => ({
             id,
             index,
             title,
-            mappings,
+            collaborators,
             readonly: true,
-            newMappingInput: ''
+            newCollaboratorInput: ''
           }))
         }
       }
@@ -168,9 +186,9 @@ export default {
   },
   computed: {
     ...userGetters({
-      userCategories: USER_CATEGORIES
+      userBudgers: USER_BUDGERS
     }),
-    categoriesColumns: () => ([{
+    budgersColumns: () => ([{
       field: ({ title }) => title,
       label: 'Title',
       name: 'title',
@@ -179,40 +197,40 @@ export default {
   },
   methods: {
     ...userActions({
-      createCategory: CREATE_CATEGORY,
-      updateCategory: UPDATE_CATEGORY,
-      deleteCategory: DELETE_CATEGORY,
-      createCategoryMapping: CREATE_CATEGORY_MAPPING,
-      deleteCategoryMapping: DELETE_CATEGORY_MAPPING,
+      createBudger: CREATE_BUDGER,
+      updateBudger: UPDATE_BUDGER,
+      deleteBudger: DELETE_BUDGER,
+      createBudgerCollaborator: CREATE_BUDGER_COLLABORATOR,
+      deleteBudgerCollaborator: DELETE_BUDGER_COLLABORATOR,
     }),
     handleDeleteClick (id) {
-      this.deleteCategory(id)
+      this.deleteBudger(id)
     },
-    handleRemoveMappingClick (categoryId, mapping) {
-      this.deleteCategoryMapping({ categoryId, mapping })
+    handleRemoveCollaboratorClick (categoryId, mapping) {
+      this.deleteCategoryCollaborator({ categoryId, mapping })
     },
-    handlMappingsSubmit (categoryId, index) {
-      const { newMappingInput } = this.categoriesData[index]
-      this.createCategoryMapping({ categoryId, mapping: newMappingInput })
-      this.categoriesData[index].newMappingInput = ''
+    handlCollaboratorsSubmit (categoryId, index) {
+      const { newCollaboratorInput } = this.budgersData[index]
+      this.createCategoryCollaborator({ categoryId, mapping: newCollaboratorInput })
+      this.budgersData[index].newCollaboratorInput = ''
     },
     handleTitleBtnClick (index) {
-      const category = { ...this.categoriesData[index] };
-      if (category.readonly) {
-        this.categoriesData[index].readonly = false;
-        this.$refs[`titleInput${category.id}`].focus()
+      const budger = { ...this.budgersData[index] };
+      if (budger.readonly) {
+        this.budgersData[index].readonly = false;
+        this.$refs[`titleInput${budger.id}`].focus()
       } else {
         this.handleTitleUpdateSubmit(index);
       }
     },
     handleTitleUpdateSubmit (index) {
-      const category = { ...this.categoriesData[index] };
-      this.categoriesData[index].readonly = true;
-      delete category.index;
-      this.updateCategory(category);
+      const budger = { ...this.budgersData[index] };
+      this.budgersData[index].readonly = true;
+      delete budger.index;
+      this.updateBudger(budger);
     },
     async handleSubmit () {
-      this.createCategory(this.title)
+      this.createBudger(this.title)
     },
   }
 }

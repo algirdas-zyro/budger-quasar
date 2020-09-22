@@ -1,10 +1,17 @@
 export const SET_USER = 'SET_USER';
 export const SET_TOKEN = 'SET_TOKEN';
-export const SET_CATEGORY = 'SET_CATEGORY';
+
+export const APPEND_BUDGER = 'APPEND_BUDGER';
+export const SET_BUDGER = 'SET_BUDGER';
+export const SPLICE_BUDGER = 'SPLICE_BUDGER';
+export const APPEND_BUDGER_COLLABORATOR = 'APPEND_BUDGER_COLLABORATOR';
+export const SPLICE_BUDGER_COLLABORATOR = 'SPLICE_BUDGER_COLLABORATOR';
+
+export const APPEND_CATEGORY = 'APPEND_CATEGORY';
 export const UPDATE_CATEGORY = 'UPDATE_CATEGORY';
-export const UNSET_CATEGORY = 'UNSET_CATEGORY';
-export const SET_CATEGORY_MAPPING = 'SET_CATEGORY_MAPPING';
-export const UNSET_CATEGORY_MAPPING = 'UNSET_CATEGORY_MAPPING';
+export const SPLICE_CATEGORY = 'SPLICE_CATEGORY';
+export const APPEND_CATEGORY_MAPPING = 'APPEND_CATEGORY_MAPPING';
+export const SPLICE_CATEGORY_MAPPING = 'SPLICE_CATEGORY_MAPPING';
 
 export default {
   [SET_USER](state, { id, email, budgers, categories }) {
@@ -16,28 +23,35 @@ export default {
   [SET_TOKEN](state, payload) {
     state.token = payload;
   },
-  [SET_CATEGORY](state, category) {
+  [APPEND_BUDGER](state, budger) {
+    state.budgers = [...state.budgers, budger]
+  },
+  [SET_BUDGER](state, updatedBudger) {
+    state.budgers = state.budgers.map((budger) => {
+      return budger.id === updatedBudger.id ? updatedBudger : budger
+    })
+  },
+  [SPLICE_BUDGER](state, id) {
+    state.budgers = state.budgers.filter((budger)=> budger.id !==id)
+  },
+  [APPEND_CATEGORY](state, category) {
     state.categories = [...state.categories, category]
   },
   [UPDATE_CATEGORY](state, updatedCategory) {
     state.categories = state.categories.map((category) => {
-      console.log(updatedCategory.id, category.id)
-      if (category.id === updatedCategory.id) {
-        console.log(updatedCategory.title)
-      }
       return category.id === updatedCategory.id ? updatedCategory : category
     })
   },
-  [UNSET_CATEGORY](state, id) {
+  [SPLICE_CATEGORY](state, id) {
     state.categories = state.categories.filter((category)=> category.id !==id)
   },
-  [SET_CATEGORY_MAPPING](state, { categoryId, mapping }) {
+  [APPEND_CATEGORY_MAPPING](state, { categoryId, mapping }) {
     state.categories = state.categories.map((category) => {
       if (category.id === categoryId) category.mappings = [mapping, ...category.mappings]
       return category
     })
   },
-  [UNSET_CATEGORY_MAPPING](state, { categoryId, mapping }) {
+  [SPLICE_CATEGORY_MAPPING](state, { categoryId, mapping }) {
     state.categories = state.categories.map((category) => {
       if (category.id === categoryId) {
         category.mappings = category.mappings.filter((m) => m !== mapping)

@@ -86,6 +86,7 @@ export default function useApi () {
 
 // export endpoints for use in components
 export const BUDGERS_API = 'budgers'
+export const INVITATIONS_API = 'invitations'
 export const CATEGORIES_API = 'categories'
 export const AUTH_LOCAL_API = 'auth/local'
 export const AUTH_LOCAL_REGISTER_API = 'auth/local/register'

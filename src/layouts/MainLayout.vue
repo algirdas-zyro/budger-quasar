@@ -2,14 +2,6 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
-        />
         <router-link
           :to="CATEGORIES_PATH"
           v-slot="{ href, navigate, isActive, isExactActive }"
@@ -34,6 +26,30 @@
             @click="navigate"
           />
         </router-link>
+        <router-link
+          :to="COLLABORATORS_PATH"
+          v-slot="{ href, navigate, isActive, isExactActive }"
+        >
+          <q-btn
+            type="a"
+            label="collaborators"
+            :class="[isActive && 'router-link-active', isExactActive && 'router-link-exact-active']"
+            :href="href"
+            @click="navigate"
+          />
+        </router-link>
+        <router-link
+          :to="BUDGERS_PATH"
+          v-slot="{ href, navigate, isActive, isExactActive }"
+        >
+          <q-btn
+            type="a"
+            label="budgers"
+            :class="[isActive && 'router-link-active', isExactActive && 'router-link-exact-active']"
+            :href="href"
+            @click="navigate"
+          />
+        </router-link>
         <q-toolbar-title>
           <router-link :to="HOME_PATH">
             Quasar App
@@ -46,7 +62,7 @@
           @click="logOut"
         >
           <div>
-            {{getEmail}}
+            {{userEmail}}
           </div>
           <router-link
             :to="HOME_PATH"
@@ -89,23 +105,6 @@
         </div>
       </q-toolbar>
     </q-header>
-
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-      content-class="bg-grey-1"
-    >
-      <q-list>
-        <q-item-label
-          header
-          class="text-grey-8"
-        >
-          Essential Links
-        </q-item-label>
-      </q-list>
-    </q-drawer>
-
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -122,7 +121,9 @@ import {
   LOGIN_PATH,
   REGISTER_PATH,
   CATEGORIES_PATH,
+  BUDGERS_PATH,
   IMPORTER_PATH,
+  COLLABORATORS_PATH,
 } from 'src/router/routes'
 
 import { USER_EMAIL, IS_AUTHENTICATED } from 'src/store/user/getters';
@@ -140,17 +141,14 @@ export default {
       REGISTER_PATH,
       CATEGORIES_PATH,
       IMPORTER_PATH,
-    }
-  },
-  data () {
-    return {
-      leftDrawerOpen: false,
+      COLLABORATORS_PATH,
+      BUDGERS_PATH,
     }
   },
   computed: {
     ...userGetters({
       isAuthenticated: IS_AUTHENTICATED,
-      getEmail: USER_EMAIL
+      userEmail: USER_EMAIL
     })
   },
   methods: {
