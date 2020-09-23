@@ -45,8 +45,8 @@ import useApi, { INVITATIONS_API } from 'src/use/useApi'
 
 const { mapActions: userActions } = createNamespacedHelpers(USER);
 
-const secretKey = "some-unique-key"; // :D
-const simpleCrypto = new SimpleCrypto(secretKey)
+const SECRET_KEY = "some-unique-key"; // :D
+const simpleCrypto = new SimpleCrypto(SECRET_KEY)
 const {
   mapGetters: userGetters,
 } = createNamespacedHelpers(USER);

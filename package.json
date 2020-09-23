@@ -20,9 +20,11 @@
     "quasar": "^1.0.0",
     "simple-crypto-js": "^3.0.0",
     "socket.io-client": "^2.3.0",
+    "vuelidate": "^0.7.5",
     "vuex-composition-helpers": "^1.0.20"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-logical-assignment-operators": "^7.11.0",
     "@quasar/app": "^2.0.0",
     "babel-eslint": "^10.0.1",
     "dotenv": "^8.2.0",

@@ -4,19 +4,24 @@ import { BUDGER, SOCKET } from 'src/store/namespace';
 
 import { EMIT } from 'src/store/socket/actions'
 import { INITIALIZE } from 'src/store/budger/actions';
-
 import { BUDGER_ID } from 'src/store/budger/getters';
+
+import {
+  JWT_TOKEN,
+  USER_ID,
+  USER_EMAIL,
+  USER_BUDGERS,
+} from './getters';
 import {
   SET_USER,
   SET_TOKEN,
   APPEND_BUDGER,
   SET_BUDGER,
   SPLICE_BUDGER,
+  SPLICE_BUDGER_INVITATION,
   APPEND_BUDGER_COLLABORATOR,
   SPLICE_BUDGER_COLLABORATOR,
-} from 'src/store/user/mutations';
-
-import { JWT_TOKEN, USER_ID } from './getters';
+} from './mutations';
 
 let jwtInterceptor;
 
@@ -31,6 +36,8 @@ export const CHECK_LOCALSTORAGE = 'CHECK_LOCALSTORAGE';
 export const CREATE_BUDGER = 'CREATE_BUDGER';
 export const UPDATE_BUDGER = 'UPDATE_BUDGER';
 export const DELETE_BUDGER = 'DELETE_BUDGER';
+export const CREATE_BUDGER_INVITATION = 'CREATE_BUDGER_INVITATION';
+export const DELETE_BUDGER_INVITATION = 'DELETE_BUDGER_INVITATION';
 export const CREATE_BUDGER_COLLABORATOR = 'CREATE_BUDGER_COLLABORATOR';
 export const DELETE_BUDGER_COLLABORATOR = 'DELETE_BUDGER_COLLABORATOR';
 
@@ -113,8 +120,27 @@ export default {
     commit(SPLICE_BUDGER, data.id);
   },
 
-  [CREATE_BUDGER_COLLABORATOR]({ getters, rootGetters, dispatch }, title) {
-    console.log(title)
+  async [CREATE_BUDGER_INVITATION]({ getters, dispatch }, { newInvitationEmail, index }) {
+    const budger = { ...getters[USER_BUDGERS][index]};
+    const { data } = await axios.post('invitations', { budger, to: newInvitationEmail });
+    budger.invitations = budger.invitations ? [...budger.invitations, data] : [data]
+    dispatch(UPDATE_BUDGER, budger);
+  },
+
+  async [DELETE_BUDGER_INVITATION]({ getters, dispatch }, { budgerIndex, invitationId }) {
+    const budger = { ...getters[USER_BUDGERS][budgerIndex]};
+    budger.invitations = budger.invitations.filter((invitation) => invitation.id !== invitationId);
+    const { data } = await axios.delete(`invitations/${invitationId}`);
+    dispatch(UPDATE_BUDGER, budger);
+  },
+
+  async [CREATE_BUDGER_COLLABORATOR]({ getters, dispatch }, { newCollaboratorEmail, index }) {
+    console.log({ newCollaboratorEmail, index })
+    // const invitation = {
+    //   budger: getters[USER_BUDGERS][index],
+    //   to: newCollaboratorEmail
+    // };
+    // const { data } = await axios.post('invitations', invitation);
   },
 
   [DELETE_BUDGER_COLLABORATOR]({ getters, rootGetters, dispatch }, title) {

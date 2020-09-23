@@ -51,21 +51,40 @@
           <q-td style="white-space:normal">
             <q-chip
               removable
-              v-for="(mapping, index) in props.row.collaborators"
+              v-for="(collaborator, index) in props.row.collaborators"
               :key="index"
-              @remove="handleRemoveCollaboratorClick(props.row.id, mapping)"
-              :label="mapping"
+              @remove="handleRemoveCollaboratorClick(props.row.id, collaborator)"
+              :label="collaborator.email"
+            />
+          </q-td>
+
+          <q-td style="white-space:normal">
+            <q-chip
+              removable
+              v-for="(invitation, index) in props.row.invitations"
+              :key="index"
+              @remove="handleRemoveInvitationClick(props.row.index, invitation.id)"
+              :label="invitation.to"
             />
           </q-td>
 
           <q-td auto-width>
-            <q-form @submit="handlCollaboratorsSubmit(props.row.id, props.row.index)">
+            <q-form>
 
               <div class="create">
                 <q-input
                   bottom-slots
-                  v-model="props.row.newCollaboratorInput"
+                  lazy-rules
+                  v-model="props.row.newInvitationEmail"
                   label="new collaborator"
+                  type="email"
+                  :ref="`emailInput${props.row.index}`"
+                  :rules="[
+                    val => val.length || 'Field is required',
+                    val => val.match(/\S+@\S+\.\S+/g) || 'Not an email',
+                    val => val !== userEmail || 'Cannot invite self',
+                    val => !props.row.invitations.some((invitation) => invitation.to === val) || 'Already exists',
+                  ]"
                 >
                   <template v-slot:append>
                     <q-btn
@@ -74,7 +93,7 @@
                       icon="send"
                       type="submit"
                       color="primary"
-                      @click="handlCollaboratorsSubmit(props.row.id, props.row.index)"
+                      @click="handleInvitationsSubmit(props.row.index)"
                     />
                   </template>
                 </q-input>
@@ -115,12 +134,15 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex';
+// import { required, email } from 'vuelidate/lib/validators';
 
 import { USER } from 'src/store/namespace';
 import {
   CREATE_BUDGER,
   UPDATE_BUDGER,
   DELETE_BUDGER,
+  CREATE_BUDGER_INVITATION,
+  DELETE_BUDGER_INVITATION,
   CREATE_BUDGER_COLLABORATOR,
   DELETE_BUDGER_COLLABORATOR,
 } from 'src/store/user/actions';
@@ -128,7 +150,7 @@ import {
 import { HOME_PATH } from 'src/router/routes';
 
 import useApi, { BUDGERS_API } from 'src/use/useApi'
-import { USER_BUDGERS } from 'src/store/user/getters';
+import { USER_BUDGERS, USER_EMAIL } from 'src/store/user/getters';
 
 const {
   mapActions: userActions,
@@ -161,6 +183,15 @@ export default {
       budgersData: [],
     }
   },
+  // validations: {
+  //   email: {
+  //     required,
+  //     email,
+  //   },
+  //   password: {
+  //     required,
+  //   },
+  // },
   watch: {
     // Whenever the movie prop changes, fetch new data
     userBudgers: {
@@ -171,14 +202,15 @@ export default {
           this.budgersData = userBudgers?.map(({
             id,
             title,
-            collaborators,
+            invitations,
           }, index) => ({
             id,
             index,
             title,
-            collaborators,
+            invitations,
             readonly: true,
-            newCollaboratorInput: ''
+            // newInvitationEmail: 'algirdas@zyro.com',
+            newInvitationEmail: '',
           }))
         }
       }
@@ -186,33 +218,44 @@ export default {
   },
   computed: {
     ...userGetters({
-      userBudgers: USER_BUDGERS
+      userBudgers: USER_BUDGERS,
+      userEmail: USER_EMAIL,
     }),
     budgersColumns: () => ([{
       field: ({ title }) => title,
       label: 'Title',
       name: 'title',
       align: 'left'
-    }])
+    }]),
   },
   methods: {
     ...userActions({
       createBudger: CREATE_BUDGER,
       updateBudger: UPDATE_BUDGER,
       deleteBudger: DELETE_BUDGER,
+      createBudgerInvitation: CREATE_BUDGER_INVITATION,
+      deleteBudgerInvitation: DELETE_BUDGER_INVITATION,
       createBudgerCollaborator: CREATE_BUDGER_COLLABORATOR,
       deleteBudgerCollaborator: DELETE_BUDGER_COLLABORATOR,
     }),
-    handleDeleteClick (id) {
-      this.deleteBudger(id)
+    handleCollaboratorsSubmit (index) {
+      // const { newCollaboratorEmail } = this.budgersData[index];
+      // this.createBudgerCollaborator({ newCollaboratorEmail, index });
+      // this.budgersData[index].newCollaboratorEmail = '';
     },
-    handleRemoveCollaboratorClick (categoryId, mapping) {
-      this.deleteCategoryCollaborator({ categoryId, mapping })
+    handleRemoveCollaboratorClick (budgerId, collaborator) {
+      // this.deleteBudgerCollaborator({ budgerId, collaborator });
     },
-    handlCollaboratorsSubmit (categoryId, index) {
-      const { newCollaboratorInput } = this.budgersData[index]
-      this.createCategoryCollaborator({ categoryId, mapping: newCollaboratorInput })
-      this.budgersData[index].newCollaboratorInput = ''
+    async handleInvitationsSubmit (index) {
+      const email = this.$refs[`emailInput${index}`];
+      if (!await email.validate()) return;
+      const { newInvitationEmail } = this.budgersData[index];
+      this.createBudgerInvitation({ newInvitationEmail, index });
+      this.budgersData[index].newInvitationEmail = '';
+      email.resetValidation();
+    },
+    handleRemoveInvitationClick (budgerIndex, invitationId) {
+      this.deleteBudgerInvitation({ budgerIndex, invitationId });
     },
     handleTitleBtnClick (index) {
       const budger = { ...this.budgersData[index] };
@@ -229,8 +272,11 @@ export default {
       delete budger.index;
       this.updateBudger(budger);
     },
-    async handleSubmit () {
+    handleSubmit () {
       this.createBudger(this.title)
+    },
+    handleDeleteClick (id) {
+      this.deleteBudger(id);
     },
   }
 }
