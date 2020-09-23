@@ -4,6 +4,7 @@ export const USER_BUDGERS = 'USER_BUDGERS';
 export const USER_CATEGORIES = 'USER_CATEGORIES';
 export const JWT_TOKEN = 'JWT_TOKEN';
 export const IS_AUTHENTICATED = 'IS_AUTHENTICATED';
+export const ENCRYPTED_INVITATION = 'ENCRYPTED_INVITATION';
 
 export default {
   [USER_ID]: (state) => state.id,
@@ -12,4 +13,5 @@ export default {
   [USER_CATEGORIES]: (state) => state.categories,
   [JWT_TOKEN]: (state) => state.token,
   [IS_AUTHENTICATED]: (state) => !!state.token?.length ?? false,
+  [ENCRYPTED_INVITATION]: (state) => state.encryptedInvitation,
 };

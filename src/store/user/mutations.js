@@ -1,5 +1,6 @@
 export const SET_USER = 'SET_USER';
 export const SET_TOKEN = 'SET_TOKEN';
+export const SET_ENCRYPTED_INVITATION = 'SET_ENCRYPTED_INVITATION';
 
 export const APPEND_BUDGER = 'APPEND_BUDGER';
 export const SET_BUDGER = 'SET_BUDGER';
@@ -24,6 +25,9 @@ export default {
   },
   [SET_TOKEN](state, payload) {
     state.token = payload;
+  },
+  [SET_ENCRYPTED_INVITATION](state, payload) {
+    state.encryptedInvitation = payload;
   },
   [APPEND_BUDGER](state, budger) {
     state.budgers = [...state.budgers, budger]

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import SimpleCrypto from "simple-crypto-js"
 
 import { BUDGER, SOCKET } from 'src/store/namespace';
 
@@ -10,11 +11,13 @@ import {
   JWT_TOKEN,
   USER_ID,
   USER_EMAIL,
+  ENCRYPTED_INVITATION,
   USER_BUDGERS,
 } from './getters';
 import {
   SET_USER,
   SET_TOKEN,
+  SET_ENCRYPTED_INVITATION,
   APPEND_BUDGER,
   SET_BUDGER,
   SPLICE_BUDGER,
@@ -24,6 +27,8 @@ import {
 } from './mutations';
 
 let jwtInterceptor;
+const SECRET_KEY = "some-unique-key"; // :D
+const simpleCrypto = new SimpleCrypto(SECRET_KEY)
 
 export const JWT_STORAGE_KEY = 'jwt'
 export const USER_STORAGE_KEY = 'user'
@@ -46,6 +51,9 @@ export const UPDATE_CATEGORY = 'UPDATE_CATEGORY';
 export const DELETE_CATEGORY = 'DELETE_CATEGORY';
 export const CREATE_CATEGORY_MAPPING = 'CREATE_CATEGORY_MAPPING';
 export const DELETE_CATEGORY_MAPPING = 'DELETE_CATEGORY_MAPPING';
+
+export const UPDATE_ENCRYPTED_INVITATION = 'UPDATE_ENCRYPTED_INVITATION';
+export const ACCEPT_INVITATION = 'ACCEPT_INVITATION';
 
 export default {
   [LOG_IN]({ getters, dispatch, commit }, { jwt, user, remember }) {
@@ -72,6 +80,15 @@ export default {
       const { id, expenses, categories } = user.main_budger
       dispatch(`${BUDGER}/${INITIALIZE}`, { id, expenses, categories }, { root: true });
     }
+
+    if (getters[ENCRYPTED_INVITATION]) {
+      const [decrypedEmail, invitationId] = simpleCrypto.decrypt(getters[ENCRYPTED_INVITATION]).split('|');
+      if (decrypedEmail === user.email) {
+        dispatch(ACCEPT_INVITATION, +invitationId); // NB invitationId is converted to number here
+        console.log('accept the invitation from user store')
+        // this.updateEncryptionHash(id); // accept already?..
+      }
+    }
   },
 
   [LOG_OUT]({ commit }) {
@@ -83,6 +100,16 @@ export default {
 
     axios.interceptors.request.eject(jwtInterceptor);
 
+  },
+
+  [UPDATE_ENCRYPTED_INVITATION]({commit}, encryptedInvitation) {
+    commit(SET_ENCRYPTED_INVITATION, encryptedInvitation)
+  },
+
+  async [ACCEPT_INVITATION]({commit}, invitationId) {
+    const invitation = await axios.post('invitations/accept', {invitationId})
+    console.log({invitation})
+    // commit(SET_ENCRYPTED_INVITATION, encryptedInvitation)
   },
 
   async [CHECK_LOCALSTORAGE]({ dispatch }) {

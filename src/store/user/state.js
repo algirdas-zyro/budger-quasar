@@ -3,5 +3,6 @@ export default () => ({
   id: null,
   budgers: [],
   categories: [],
-  token: null
+  token: null,
+  encryptedInvitation: null,
 });
