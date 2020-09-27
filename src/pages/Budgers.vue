@@ -84,6 +84,7 @@
                     val => val.match(/\S+@\S+\.\S+/g) || 'Not an email',
                     val => val !== userEmail || 'Cannot invite self',
                     val => !props.row.invitations.some((invitation) => invitation.to === val) || 'Already exists',
+                    val => !props.row.collaborators.some((collaborator) => collaborator.to === val) || 'Already exists',
                   ]"
                 >
                   <template v-slot:append>
@@ -134,7 +135,6 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex';
-// import { required, email } from 'vuelidate/lib/validators';
 
 import { USER } from 'src/store/namespace';
 import {
@@ -158,40 +158,12 @@ const {
 } = createNamespacedHelpers(USER);
 
 export default {
-  setup () {
-    const {
-      isLoading,
-      hasLoaded,
-      hasFailed,
-      errorMessage,
-      result,
-      callApi
-    } = useApi()
-
-    return {
-      isLoading,
-      hasLoaded,
-      hasFailed,
-      errorMessage,
-      result,
-      callApi
-    }
-  },
   data () {
     return {
       title: '',
       budgersData: [],
     }
   },
-  // validations: {
-  //   email: {
-  //     required,
-  //     email,
-  //   },
-  //   password: {
-  //     required,
-  //   },
-  // },
   watch: {
     // Whenever the movie prop changes, fetch new data
     userBudgers: {
@@ -202,14 +174,15 @@ export default {
           this.budgersData = userBudgers?.map(({
             id,
             title,
+            collaborators,
             invitations,
           }, index) => ({
             id,
             index,
             title,
+            collaborators,
             invitations,
             readonly: true,
-            // newInvitationEmail: 'algirdas@zyro.com',
             newInvitationEmail: '',
           }))
         }

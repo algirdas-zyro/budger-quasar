@@ -84,9 +84,7 @@ export default {
     if (getters[ENCRYPTED_INVITATION]) {
       const [decrypedEmail, invitationId] = simpleCrypto.decrypt(getters[ENCRYPTED_INVITATION]).split('|');
       if (decrypedEmail === user.email) {
-        dispatch(ACCEPT_INVITATION, +invitationId); // NB invitationId is converted to number here
-        console.log('accept the invitation from user store')
-        // this.updateEncryptionHash(id); // accept already?..
+        dispatch(ACCEPT_INVITATION, +invitationId);
       }
     }
   },
@@ -107,9 +105,8 @@ export default {
   },
 
   async [ACCEPT_INVITATION]({commit}, invitationId) {
-    const invitation = await axios.post('invitations/accept', {invitationId})
-    console.log({invitation})
-    // commit(SET_ENCRYPTED_INVITATION, encryptedInvitation)
+    const { data } = await axios.post('invitations/accept', { invitationId })
+    commit(APPEND_BUDGER, data);
   },
 
   async [CHECK_LOCALSTORAGE]({ dispatch }) {

@@ -17,8 +17,12 @@ import { createNamespacedHelpers } from 'vuex';
 import SimpleCrypto from "simple-crypto-js"
 
 import { USER } from 'src/store/namespace';
-import { ACCEPT_INVITATION, UPDATE_ENCRYPTED_INVITATION } from 'src/store/user/actions';
+import {
+  ACCEPT_INVITATION,
+  UPDATE_ENCRYPTED_INVITATION,
+} from 'src/store/user/actions';
 import { USER_EMAIL } from 'src/store/user/getters';
+import { INVITATION_PATH } from 'src/router/routes';
 
 
 const SECRET_KEY = "some-unique-key"; // :D
@@ -39,8 +43,6 @@ export default {
     if (!this.userEmail) return;
     if (decrypedEmail === this.userEmail) {
       this.acceptInvitation(invitationId);
-      // console.log('accept it!')
-      // this.updateEncryptionHash(id); // accept already?..
     }
   },
   computed: userGetters({ userEmail: USER_EMAIL }),
