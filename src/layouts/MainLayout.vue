@@ -3,6 +3,18 @@
     <q-header elevated>
       <q-toolbar>
         <router-link
+          :to="CREATE_PATH"
+          v-slot="{ href, navigate, isActive, isExactActive }"
+        >
+          <q-btn
+            type="a"
+            label="create"
+            :class="[isActive && 'router-link-active', isExactActive && 'router-link-exact-active']"
+            :href="href"
+            @click="navigate"
+          />
+        </router-link>
+        <router-link
           :to="CATEGORIES_PATH"
           v-slot="{ href, navigate, isActive, isExactActive }"
         >
@@ -21,18 +33,6 @@
           <q-btn
             type="a"
             label="importer"
-            :class="[isActive && 'router-link-active', isExactActive && 'router-link-exact-active']"
-            :href="href"
-            @click="navigate"
-          />
-        </router-link>
-        <router-link
-          :to="COLLABORATORS_PATH"
-          v-slot="{ href, navigate, isActive, isExactActive }"
-        >
-          <q-btn
-            type="a"
-            label="collaborators"
             :class="[isActive && 'router-link-active', isExactActive && 'router-link-exact-active']"
             :href="href"
             @click="navigate"
@@ -123,7 +123,7 @@ import {
   CATEGORIES_PATH,
   BUDGERS_PATH,
   IMPORTER_PATH,
-  COLLABORATORS_PATH,
+  CREATE_PATH,
 } from 'src/router/routes'
 
 import { USER_EMAIL, IS_AUTHENTICATED } from 'src/store/user/getters';
@@ -141,8 +141,8 @@ export default {
       REGISTER_PATH,
       CATEGORIES_PATH,
       IMPORTER_PATH,
-      COLLABORATORS_PATH,
       BUDGERS_PATH,
+      CREATE_PATH,
     }
   },
   computed: {

@@ -4,7 +4,7 @@ import SimpleCrypto from "simple-crypto-js"
 import { BUDGER, SOCKET } from 'src/store/namespace';
 
 import { EMIT } from 'src/store/socket/actions'
-import { INITIALIZE } from 'src/store/budger/actions';
+import { INITIALIZE_MAIN_BUDGER } from 'src/store/budger/actions';
 import { BUDGER_ID } from 'src/store/budger/getters';
 
 import {
@@ -55,6 +55,8 @@ export const DELETE_CATEGORY_MAPPING = 'DELETE_CATEGORY_MAPPING';
 export const UPDATE_ENCRYPTED_INVITATION = 'UPDATE_ENCRYPTED_INVITATION';
 export const ACCEPT_INVITATION = 'ACCEPT_INVITATION';
 
+export const UPDATE_MAIN_BUDGER = 'UPDATE_MAIN_BUDGER';
+
 export default {
   [LOG_IN]({ getters, dispatch, commit }, { jwt, user, remember }) {
 
@@ -72,13 +74,13 @@ export default {
     commit(SET_USER, user);
 
     if (remember) {
-      localStorage.setItem(JWT_STORAGE_KEY, JSON.stringify(jwt))
-      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user))
+      localStorage.setItem(JWT_STORAGE_KEY, JSON.stringify(jwt));
+      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
     }
 
-    if (user.main_budger) {
-      const { id, expenses, categories } = user.main_budger
-      dispatch(`${BUDGER}/${INITIALIZE}`, { id, expenses, categories }, { root: true });
+    if (user.mainBudger) {
+      const { id, expenses, categories } = user.mainBudger;
+      dispatch(`${BUDGER}/${INITIALIZE_MAIN_BUDGER}`, { id, expenses, categories }, { root: true });
     }
 
     if (getters[ENCRYPTED_INVITATION]) {
@@ -210,5 +212,10 @@ export default {
       { event: DELETE_CATEGORY_MAPPING, data: { categoryId, mapping } },
       { root: true }
     );
+  },
+
+  [UPDATE_MAIN_BUDGER]({ state, dispatch }, { id, expenses, categories }) {
+      // console.log(state);
+      dispatch(`${BUDGER}/${INITIALIZE_MAIN_BUDGER}`, { id, expenses, categories }, { root: true });
   },
 };

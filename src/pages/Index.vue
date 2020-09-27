@@ -41,13 +41,16 @@
             class="budger"
             v-for="({ title, id }) in userBudgers"
             :key="id"
-          >{{title}}</div>
+          >
+            {{title}}
+          </div>
         </div>
       </div>
       <div
         class="create"
         v-else
       >
+        <p>You don't have any budgers yet. Let's create one.</p>
         <router-link
           :to="CREATE_PATH"
           v-slot="{ href, navigate, isActive, isExactActive }"

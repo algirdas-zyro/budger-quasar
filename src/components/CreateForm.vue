@@ -28,6 +28,12 @@ import useApi, { BUDGERS_API } from 'src/use/useApi'
 const { mapActions: userActions } = createNamespacedHelpers(USER);
 
 export default {
+  props: {
+    setAsMain: {
+      type: Boolean,
+      default: false,
+    }
+  },
   data () {
     return {
       title: '',
@@ -58,15 +64,17 @@ export default {
       await this.callApi(BUDGERS_API, {
         method: 'POST',
         data: {
-          title: this.title
+          title: this.title,
+          setAsMain: this.setAsMain,
         }
       })
       console.log(this.result)
       if (this.result) {
+        this.$emit('create', this.result);
         // this.logIn(this.result)
         // this.$router.push({ path: HOME_PATH })
       } else {
-        console.log('login failute')
+        console.log('creation failure')
       }
     },
   }

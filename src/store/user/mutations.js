@@ -34,7 +34,7 @@ export default {
   },
   [SET_BUDGER](state, updatedBudger) {
     state.budgers = state.budgers.map((budger) => budger.id === updatedBudger.id ? updatedBudger : budger)
-    // TODO: update main_budger if it's main budger update
+    // TODO: update mainBudger if it's main budger update
   },
   [SPLICE_BUDGER](state, id) {
     state.budgers = state.budgers.filter((budger)=> budger.id !==id)

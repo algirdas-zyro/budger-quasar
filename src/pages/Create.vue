@@ -3,7 +3,10 @@
 
     <h1>Create a new budger</h1>
 
-    <CreateForm />
+    <CreateForm
+      set-as-main
+      @create="handleCreate"
+    />
   </q-page>
 </template>
 
@@ -13,7 +16,7 @@ import { createNamespacedHelpers } from 'vuex';
 import CreateForm from 'src/components/CreateForm'
 
 import { USER } from 'src/store/namespace';
-import { LOG_IN } from 'src/store/user/actions';
+import { UPDATE_MAIN_BUDGER } from 'src/store/user/actions';
 import { HOME_PATH } from 'src/router/routes';
 
 import useApi, { BUDGERS_API } from 'src/use/useApi'
@@ -24,46 +27,12 @@ export default {
   components: {
     CreateForm
   },
-  data () {
-    return {
-      title: '',
-    }
-  },
-  setup () {
-    const {
-      isLoading,
-      hasLoaded,
-      hasFailed,
-      errorMessage,
-      result,
-      callApi
-    } = useApi()
-
-    return {
-      isLoading,
-      hasLoaded,
-      hasFailed,
-      errorMessage,
-      result,
-      callApi
-    }
-  },
   methods: {
-    ...userActions({ logIn: LOG_IN }),
-    async onSubmit () {
-      await this.callApi(BUDGERS_API, {
-        method: 'POST',
-        data: {
-          title: this.title
-        }
-      })
-      console.log(this.result)
-      if (this.result) {
-        // this.logIn(this.result)
-        // this.$router.push({ path: HOME_PATH })
-      } else {
-        console.log('login failute')
-      }
+    ...userActions({
+      updateMainBudger: UPDATE_MAIN_BUDGER
+    }),
+    handleCreate (createdBudger) {
+      this.updateMainBudger(createdBudger);
     },
   }
 }
