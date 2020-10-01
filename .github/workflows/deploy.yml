@@ -52,7 +52,7 @@ jobs:
         run: yarn --frozen-lockfile
 
       - name: Instal Quasar
-        run: yarn i quasar -g
+        run: yarn add quasar -g
 
       - name: Build
         run: yarn --frozen-lockfile
