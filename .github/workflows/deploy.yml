@@ -52,7 +52,7 @@ jobs:
         run: yarn --frozen-lockfile
 
       - name: Install Quasar
-        run: yarn global add @quasar/cli
+        run: npm install -g @quasar/cli
 
       - name: Build
         run: quasar build
