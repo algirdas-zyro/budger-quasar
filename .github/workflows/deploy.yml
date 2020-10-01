@@ -22,15 +22,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
@@ -49,19 +40,19 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: Install dependencies
-        run: yarn --frozen-lockfile
-
-      - name: Install Quasar
-        run: npm install -g @quasar/cli
+        run: |
+          yarn global add @quasar/cli
+          echo "::add-path::$(yarn global bin)"
+          yarn --frozen-lockfile
 
       - name: Build
         run: quasar build
 
-      - name: Deploy to Staging server
+      - name: Deploy to Server
         uses: easingthemes/ssh-deploy@v2.1.5
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          SOURCE: "dist/"
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-          REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          TARGET: ${{ secrets.REMOTE_TARGET }}
+            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+            SOURCE: "dist/spa/*"
+            REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+            REMOTE_USER: ${{ secrets.REMOTE_USER }}
+            TARGET: "/var/www/budger.tech"
