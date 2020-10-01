@@ -49,10 +49,10 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: Install dependencies
-        run: yarn --frozen-lockfile
-
-      - name: Install Quasar
-        run: npm install -g @quasar/cli
+        run: |
+          yarn global add quasar
+          echo "::add-path::$(yarn global bin)"
+          yarn --frozen-lockfile
 
       - name: Build
         run: quasar build
