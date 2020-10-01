@@ -49,7 +49,10 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: Install dependencies
-        run: yarn --frozen-lockfile, yarn add quasar -g
+        run: yarn --frozen-lockfile
+
+      - name: Install Quasar
+        run: yarn add quasar -g
 
       - name: Build
         run: quasar build
