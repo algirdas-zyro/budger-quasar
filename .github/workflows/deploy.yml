@@ -49,13 +49,10 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: Install dependencies
-        run: yarn --frozen-lockfile
-
-      - name: Instal Quasar
-        run: yarn add quasar -g
+        run: yarn --frozen-lockfile, yarn add quasar -g
 
       - name: Build
-        run: yarn --frozen-lockfile
+        run: quasar build
 
       - name: Deploy to Staging server
         uses: easingthemes/ssh-deploy@v2.1.5
