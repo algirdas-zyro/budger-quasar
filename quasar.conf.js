@@ -1,4 +1,4 @@
-const dotenv = require('dotenv')
+const dotenv = require("dotenv");
 
 /*
  * This file runs in a Node context (it's NOT transpiled by Babel), so use only
@@ -20,13 +20,7 @@ module.exports = function(/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
-    boot: [
-      'socket',
-      'user',
-      'composition',
-      'axios',
-      'vuelidate',
-    ],
+    boot: ["socket", "user", "composition", "axios", "vuelidate"],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.scss"],
@@ -75,6 +69,9 @@ module.exports = function(/* ctx */) {
           exclude: /node_modules/
         });
       },
+      chainWebpack(chain) {
+        chain.plugins.delete("bundle-analyzer");
+      }
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
@@ -116,7 +113,7 @@ module.exports = function(/* ctx */) {
         // 'LocalStorage',
         // 'SessionStorage',
         // 'Meta',
-        'Notify',
+        "Notify"
       ]
     },
 
