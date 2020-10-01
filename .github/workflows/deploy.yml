@@ -50,7 +50,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          yarn global add quasar
+          yarn global add @quasar/cli
           echo "::add-path::$(yarn global bin)"
           yarn --frozen-lockfile
 
