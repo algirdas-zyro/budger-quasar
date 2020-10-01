@@ -41,7 +41,7 @@ const { mapActions: userActions } = createNamespacedHelpers(USER);
 export default {
   data () {
     return {
-      email: 'algirdas.tamasauskas@gmail.com',
+      email: '',
     }
   },
   setup () {

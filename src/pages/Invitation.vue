@@ -33,7 +33,7 @@ const { mapGetters: userGetters } = createNamespacedHelpers(USER);
 export default {
   data () {
     return {
-      email: 'algirdas.tamasauskas@gmail.com',
+      email: '',
     }
   },
   created () {

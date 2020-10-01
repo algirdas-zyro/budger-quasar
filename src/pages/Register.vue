@@ -77,8 +77,8 @@ export default {
   data () {
     return {
       username: '',
-      email: 'algirdas.tamasauskas@gmail.com',
-      password: '8simboliai',
+      email: '',
+      password: '',
       hidePassword: true,
     }
   },
