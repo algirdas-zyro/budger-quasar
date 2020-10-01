@@ -51,6 +51,9 @@ jobs:
       - name: Install dependencies
         run: yarn --frozen-lockfile
 
+      - name: Install Quasar
+        run: yarn global add @quasar/cli
+
       - name: Use joshstrange/setup-quasar
         uses: joshstrange/setup-quasar@v1
 
