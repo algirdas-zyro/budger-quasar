@@ -46,9 +46,10 @@ jobs:
           yarn --frozen-lockfile
 
       - name: Build
-        env:
-          API_URL: http://localhost:1337
-        run: quasar build
+        run: |
+          touch .env
+          echo API_URL=http://localhost:1337 >> .env
+          quasar build
 
       - name: Deploy to Server
         uses: easingthemes/ssh-deploy@v2.1.5
