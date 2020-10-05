@@ -48,7 +48,8 @@ jobs:
       - name: Build
         run: |
           touch .env
-          echo API_URL=http://localhost:1337 >> .env
+          cat config/env.prod.tpl
+          echo API_URL=http://budger.tech:1337 >> .env
           quasar build
 
       - name: Deploy to Server
