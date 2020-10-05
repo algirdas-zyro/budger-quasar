@@ -46,6 +46,8 @@ jobs:
           yarn --frozen-lockfile
 
       - name: Build
+        env:
+          API_URL: http://localhost:1337
         run: quasar build
 
       - name: Deploy to Server
