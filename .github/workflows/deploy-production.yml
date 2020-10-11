@@ -45,25 +45,16 @@ jobs:
           echo "::add-path::$(yarn global bin)"
           yarn --frozen-lockfile
 
-      - name: Make .env file
-        uses: SpicyPizza/create-envfile@v1
-        with:
-          file_name: .env
-          # JWT 
-          envkey_JWT_SECRET: ${{ secrets.PRODUCTION_JWT_SECRET }}
-          envkey_ADMIN_JWT_SECRET: ${{ secrets.PRODUCTION_ADMIN_JWT_SECRET }}
-          # EMAILS 
-          envkey_EMAIL_DEFAULT_FROM: ${{ secrets.PRODUCTION_EMAIL_DEFAULT_FROM }}
-          envkey_EMAIL_DEFAULT_REPLY_TO: ${{ secrets.PRODUCTION_EMAIL_DEFAULT_REPLY_TO }}
-          envkey_SENDGRID_API_KEY: ${{ secrets.PRODUCTION_SENDGRID_API_KEY }}
-          # DATABASE 
-          envkey_DATABASE_PORT: ${{ secrets.PRODUCTION_DATABASE_PORT }}
-          envkey_DATABASE_NAME: ${{ secrets.PRODUCTION_DATABASE_NAME }}
-          envkey_DATABASE_USERNAME: ${{ secrets.PRODUCTION_DATABASE_USERNAME }}
-          envkey_DATABASE_PASSWORD: ${{ secrets.PRODUCTION_DATABASE_PASSWORD }}
+      # - name: Make .env file
+      #   uses: SpicyPizza/create-envfile@v1
+      #   with:
+      #     file_name: .env
+      #     envkey_API_URL: ${{ secrets.PRODUCTION_API_URL }}
 
       - name: Build
         run: quasar build
+        env:
+            API_URL: ${{ secrets.PRODUCTION_API_URL }}
 
       - name: Deploy to Server
         uses: easingthemes/ssh-deploy@v2.1.5
