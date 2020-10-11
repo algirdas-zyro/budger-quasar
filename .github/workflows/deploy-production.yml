@@ -60,7 +60,7 @@ jobs:
         uses: easingthemes/ssh-deploy@v2.1.5
         env:
             SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-            SOURCE: "dist/spa/*"
             REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
             REMOTE_USER: ${{ secrets.REMOTE_USER }}
+            SOURCE: "dist/spa/*"
             TARGET: "/var/www/budger.tech/public_html"
