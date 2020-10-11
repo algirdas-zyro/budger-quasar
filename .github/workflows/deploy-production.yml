@@ -45,11 +45,11 @@ jobs:
           echo "::add-path::$(yarn global bin)"
           yarn --frozen-lockfile
 
-      # - name: Make .env file
-      #   uses: SpicyPizza/create-envfile@v1
-      #   with:
-      #     file_name: .env
-      #     envkey_API_URL: ${{ secrets.PRODUCTION_API_URL }}
+      - name: Make .env file
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          file_name: .env
+          envkey_API_URL: ${{ secrets.PRODUCTION_API_URL }}
 
       - name: Build
         run: quasar build
