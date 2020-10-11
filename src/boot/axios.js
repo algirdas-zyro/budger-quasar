@@ -7,7 +7,7 @@ export const CHECK_LOCALSTORAGE = "CHECK_LOCALSTORAGE";
 
 Vue.prototype.$axios = axios;
 
-console.log(process.env.API_URL);
+console.log(process.env);
 axios.interceptors.request.use(config => ({
   ...config,
   baseURL: process.env.API_URL,
