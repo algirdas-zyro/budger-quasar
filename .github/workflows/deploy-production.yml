@@ -26,11 +26,12 @@ jobs:
         id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-production-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
 
       - name: Install Yarn and dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: |
           yarn global add @quasar/cli
           echo "::add-path::$(yarn global bin)"
